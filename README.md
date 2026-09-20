@@ -1,51 +1,66 @@
-# LOZIA Fashion Storefront
+# LOZIA Fashion Storefront (Next.js)
 
 A responsive editorial e-commerce storefront for LOZIA, a Nigerian women's fashion label.
+Converted from a Vite + React + wouter app to Next.js (App Router).
 
-## Run & Operate
+## Run
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+```bash
+pnpm install        # or npm install / yarn
+pnpm dev            # http://localhost:3000
+pnpm build && pnpm start
+pnpm typecheck
+```
 
-## Stack
+Requires Node 20.9 or newer.
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+## Studio admin
 
-## Where things live
+`/admin` is protected by a password. Copy `.env.example` to `.env.local` and set:
 
-- `artifacts/lozia-storefront/src/data/products.ts` — typed demo catalogue and replaceable product data boundary.
-- `artifacts/lozia-storefront/src/pages/storefront-pages.tsx` — route-level storefront pages and shopping interactions.
-- `artifacts/lozia-storefront/src/components/garment-colorizer.tsx` — client-side canvas recolouring with luminance preservation and fallback.
-- `artifacts/lozia-storefront/src/components/lozia-shell.tsx` — navigation, persistent shopping bag drawer, and footer.
-- `artifacts/lozia-storefront/public/images/` — supplied LOZIA logo and local editorial product imagery.
+```bash
+ADMIN_PASSWORD=your-password
+ADMIN_SESSION_SECRET=$(openssl rand -base64 48)   # 32+ characters
+```
 
-## Architecture decisions
+Without both values `/admin` stays locked. Sessions last 7 days and are stored in an HttpOnly cookie.
 
-- The storefront uses a local typed product source and localStorage-backed bag so the UI can later swap to API data without coupling the experience to a database.
-- Product colour changes use one base image and preserve luminance through a canvas pipeline; optional masks are supported for future precise garment selections.
-- Manual transfer checkout intentionally ends in pending verification; payment is never treated as successful from the client alone.
+Shop content (products, homepage, policies, studio settings) is saved on the server in `.data/cms.json`
+(override with `CMS_DATA_FILE`). This needs a filesystem that persists between restarts, such as a VPS or Docker
+volume. On serverless hosts (e.g. Vercel) swap `src/server/cms-store.ts` for a database or KV store; it is the only
+file that touches storage.
 
-## Product
+## Structure
 
-The site includes editorial home discovery, catalogue filters and search, product pages with stock-aware variants and live colour visualization, a persistent bag drawer, manual bank-transfer checkout, order-pending confirmation, brand/about/contact content, sizing, shipping, returns, and privacy information.
+```
+src/
+  app/
+    layout.tsx            fonts (next/font), metadata, providers
+    globals.css           Tailwind v4 theme tokens + LOZIA utility classes
+    (store)/              every public page, wrapped in the header/footer/bag shell
+      page.tsx            /
+      shop/               /shop and /shop/[slug]
+      about/ checkout/ contact/ order-confirmed/ size-guide/ shipping/ returns/ privacy/
+      [...slug]/          unmatched URLs -> 404 page inside the shell
+    admin/                /admin (sign-in, then the studio desk; no shell, noindex)
+    api/healthz/          GET /api/healthz -> { status: "ok" }
+    api/admin/            POST/DELETE session (sign in / out), PUT workspace (save content)
+  views/                  page-level components (was src/pages in the Vite app)
+  components/             shell, providers, garment colorizer, shadcn/ui
+  server/                 file storage + admin auth (server-only)
+  lib/cms.ts              content types, defaults and validation shared by server and client
+  hooks/                  bag (context), CMS context, toast, mobile
+  data/products.ts        typed demo catalogue
+public/                   images, favicon, robots.txt
+```
 
-## User preferences
+## Architecture notes
 
-- Keep the LOZIA experience editorial, restrained, warm, and quietly luxurious rather than template-like.
-
-## Gotchas
-
-- The frontend workflow supplies `PORT` and `BASE_PATH`; use the managed workflow for preview rather than starting the app from the workspace root.
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- The bag lives in one React context (`BagProvider`), persisted to `localStorage` under `lozia-bag`.
+- The root layout reads the saved content on every request and hands it to the client through `CmsProvider`,
+  so admin saves (followed by `router.refresh()`) show up for every visitor and pages are rendered with the real content.
+- Policy pages, the contact page, the footer and the WhatsApp button all read from the same content.
+- Images go through `next/image` via `LoziaImage`. Files in `public/` are optimised; hosted URLs typed into the admin are shown as-is.
+- `/shop?category=…` and `/shop/[slug]?colour=…` are read on the server and passed to the page components as props.
+- Product colour changes still run client-side on a canvas (`garment-colorizer.tsx`).
+- Manual transfer checkout ends in "pending verification"; payment is never treated as successful from the client alone.

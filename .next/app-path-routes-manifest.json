@@ -1,0 +1,20 @@
+{
+  "/(store)/[...slug]/page": "/[...slug]",
+  "/(store)/about/page": "/about",
+  "/(store)/checkout/page": "/checkout",
+  "/(store)/contact/page": "/contact",
+  "/(store)/order-confirmed/page": "/order-confirmed",
+  "/(store)/page": "/",
+  "/(store)/privacy/page": "/privacy",
+  "/(store)/returns/page": "/returns",
+  "/(store)/shipping/page": "/shipping",
+  "/(store)/shop/[slug]/page": "/shop/[slug]",
+  "/(store)/shop/page": "/shop",
+  "/(store)/size-guide/page": "/size-guide",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/admin/[[...slug]]/page": "/admin/[[...slug]]",
+  "/api/admin/session/route": "/api/admin/session",
+  "/api/admin/workspace/route": "/api/admin/workspace",
+  "/api/healthz/route": "/api/healthz"
+}

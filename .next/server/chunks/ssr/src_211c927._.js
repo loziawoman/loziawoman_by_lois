@@ -1,0 +1,3 @@
+module.exports=[58202,a=>{"use strict";a.s(["StoreShell",()=>b]);let b=(0,a.i(98407).registerClientReference)(function(){throw Error("Attempted to call StoreShell() from the server but StoreShell is on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.")},"[project]/src/components/store-shell.tsx","StoreShell")},85842,a=>{"use strict";var b=a.i(58202);a.n(b)},51203,a=>{"use strict";var b=a.i(55085),c=a.i(85842);a.s(["default",0,function({children:a}){return(0,b.jsx)(c.StoreShell,{children:a})}])},95325,function(a){a.n(a.i(51203))}];
+
+//# sourceMappingURL=src_211c927._.js.map

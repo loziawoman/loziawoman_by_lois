@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///home/nexa/Projects/loziawoman/LOZIA-Fashion-Storefront%20(2)/src/app/(store)/not-found.tsx"],"sourcesContent":["import NotFound from '@/views/not-found';\n\nexport default NotFound;\n"],"names":[],"mappings":";;;;AAAA;;uCAEe,wIAAQ"}}]
+}

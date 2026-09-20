@@ -1,0 +1,20 @@
+{
+  "/(store)/[...slug]/page": "app/(store)/[...slug]/page.js",
+  "/(store)/about/page": "app/(store)/about/page.js",
+  "/(store)/checkout/page": "app/(store)/checkout/page.js",
+  "/(store)/contact/page": "app/(store)/contact/page.js",
+  "/(store)/order-confirmed/page": "app/(store)/order-confirmed/page.js",
+  "/(store)/page": "app/(store)/page.js",
+  "/(store)/privacy/page": "app/(store)/privacy/page.js",
+  "/(store)/returns/page": "app/(store)/returns/page.js",
+  "/(store)/shipping/page": "app/(store)/shipping/page.js",
+  "/(store)/shop/[slug]/page": "app/(store)/shop/[slug]/page.js",
+  "/(store)/shop/page": "app/(store)/shop/page.js",
+  "/(store)/size-guide/page": "app/(store)/size-guide/page.js",
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/[[...slug]]/page": "app/admin/[[...slug]]/page.js",
+  "/api/admin/session/route": "app/api/admin/session/route.js",
+  "/api/admin/workspace/route": "app/api/admin/workspace/route.js",
+  "/api/healthz/route": "app/api/healthz/route.js"
+}

@@ -16,24 +16,10 @@ export function Header() {
 
   return (
     <header className="relative z-30 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))]/95 backdrop-blur">
-      <div className="mx-auto grid h-[74px] max-w-[1440px] grid-cols-3 items-center px-5 md:px-10">
+      <div className="mx-auto grid h-[74px] max-w-[1440px] grid-cols-2 items-center px-5 md:grid-cols-3 md:px-10">
 
         {/* LEFT — LOGO */}
         <div className="flex items-center">
-          {/* Mobile hamburger */}
-          <button
-            className="mr-4 md:hidden"
-            onClick={() => setMenu(!menu)}
-            aria-label={menu ? "Close menu" : "Open menu"}
-            data-testid="button-open-menu"
-          >
-            {menu ? (
-              <X size={22} strokeWidth={1.3} />
-            ) : (
-              <Menu size={22} strokeWidth={1.3} />
-            )}
-          </button>
-
           <Link
             href="/"
             className="flex items-center gap-1"
@@ -44,7 +30,7 @@ export function Header() {
               alt="LOZIA"
               width={44}
               height={36}
-              className="h-8 w-8 rounded-full object-fit"
+              className="h-8 w-8 rounded-full object-cover"
             />
 
             <span className="serif text-[28px] tracking-[.24em]">
@@ -53,8 +39,7 @@ export function Header() {
           </Link>
         </div>
 
-
-        {/* CENTER — NAVIGATION */}
+        {/* CENTER — DESKTOP NAVIGATION */}
         <nav
           className="hidden items-center justify-center gap-8 md:flex"
           aria-label="Primary navigation"
@@ -96,27 +81,27 @@ export function Header() {
           </Link>
         </nav>
 
-
-        {/* RIGHT — SEARCH + BAG */}
+        {/* RIGHT — DESKTOP SEARCH + BAG / MOBILE HAMBURGER */}
         <div className="flex items-center justify-end gap-4">
 
+          {/* Desktop search */}
           <Link
             href="/shop"
             aria-label="Search"
             data-testid="link-search"
+            className="hidden md:block"
           >
             <Search size={19} strokeWidth={1.3} />
           </Link>
 
+          {/* Desktop bag */}
           <button
             onClick={() => bag.setOpen(true)}
-            className="relative flex items-center gap-2 mono"
+            className="relative hidden items-center gap-2 mono md:flex"
             aria-label="Open shopping bag"
             data-testid="button-open-bag"
           >
-            <span className="hidden md:inline">
-              Bag
-            </span>
+            <span>Bag</span>
 
             <ShoppingBag
               size={20}
@@ -129,36 +114,29 @@ export function Header() {
               </span>
             )}
           </button>
+
+          {/* Mobile hamburger — RIGHT */}
+          <button
+            className="md:hidden"
+            onClick={() => setMenu(!menu)}
+            aria-label={menu ? "Close menu" : "Open menu"}
+            data-testid="button-open-menu"
+          >
+            {menu ? (
+              <X size={23} strokeWidth={1.3} />
+            ) : (
+              <Menu size={23} strokeWidth={1.3} />
+            )}
+          </button>
         </div>
       </div>
-
 
       {/* MOBILE MENU */}
       {menu && (
         <div className="border-t border-[hsl(var(--border))] px-5 py-7 md:hidden">
-
-          {/* Mobile logo */}
-          <Link
-            href="/"
-            onClick={() => setMenu(false)}
-            className="mb-8 flex items-center gap-1"
-            data-testid="mobile-link-logo"
-          >
-            <LoziaImage
-              src="/images/logo-nav.jpeg"
-              alt="LOZIA"
-              width={44}
-              height={36}
-              className="h-9 w-9 rounded-full"
-            />
-
-            <span className="serif text-[25px] tracking-[.24em]">
-              OZIA
-            </span>
-          </Link>
-
           <div className="flex flex-col gap-5">
 
+            {/* Shop */}
             <Link
               className="serif text-2xl"
               href="/shop"
@@ -168,6 +146,7 @@ export function Header() {
               Shop
             </Link>
 
+            {/* About */}
             <Link
               className="serif text-2xl"
               href="/about"
@@ -177,6 +156,7 @@ export function Header() {
               About
             </Link>
 
+            {/* Contact */}
             <Link
               className="serif text-2xl"
               href="/contact"
@@ -185,6 +165,40 @@ export function Header() {
             >
               Contact
             </Link>
+
+            {/* Search */}
+            <Link
+              className="flex items-center gap-3 serif text-9px"
+              href="/shop"
+              onClick={() => setMenu(false)}
+              data-testid="mobile-link-search"
+            >
+              <Search size={21} strokeWidth={1.3} />
+              Search
+            </Link>
+
+            {/* Bag */}
+            <button
+              className="flex items-center gap-3 serif text-2xl text-left"
+              onClick={() => {
+                setMenu(false);
+                bag.setOpen(true);
+              }}
+              aria-label="Open shopping bag"
+              data-testid="mobile-button-bag"
+            >
+              <span className="relative">
+                <ShoppingBag size={21} strokeWidth={1.3} />
+
+                {bag.count > 0 && (
+                  <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[hsl(var(--accent))] px-1 text-[9px] text-white">
+                    {bag.count}
+                  </span>
+                )}
+              </span>
+
+              Bag
+            </button>
 
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export function AdminLogin({ configured }: { configured: boolean }) {
   const router = useRouter();
@@ -36,7 +37,7 @@ export function AdminLogin({ configured }: { configured: boolean }) {
   return (
     <div className="grain flex min-h-[100dvh] items-center justify-center bg-[hsl(var(--background))] px-5 py-16">
       <div className="w-full max-w-[420px]">
-        <p className="serif text-[34px] leading-none tracking-[-.04em]">LOZIA</p>
+        <p className="serif text-[34px] leading-none tracking-[-.04em]"><Link href="/">LOZIA</Link></p>
         <p className="mono mt-2 text-[hsl(var(--muted-foreground))]">Studio desk</p>
 
         {configured ? (

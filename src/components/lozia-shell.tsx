@@ -36,19 +36,19 @@ export function Header() {
 
           <Link
             href="/"
-            className="flex items-center gap-2"
+            className="flex items-center gap-1"
             data-testid="link-logo"
           >
             <LoziaImage
-              src="/images/lozia-logo.jpeg"
+              src="/images/logo-nav.jpeg"
               alt="LOZIA"
               width={44}
               height={36}
-              className="h-9 w-11 rounded-full object-cover object-center"
+              className="h-8 w-8 rounded-full object-fit"
             />
 
-            <span className="serif text-[25px] tracking-[.24em]">
-              LOZIA
+            <span className="serif text-[28px] tracking-[.24em]">
+              OZIA
             </span>
           </Link>
         </div>
@@ -141,19 +141,19 @@ export function Header() {
           <Link
             href="/"
             onClick={() => setMenu(false)}
-            className="mb-8 flex items-center gap-2"
+            className="mb-8 flex items-center gap-1"
             data-testid="mobile-link-logo"
           >
             <LoziaImage
-              src="/images/lozia-logo.jpeg"
+              src="/images/logo-nav.jpeg"
               alt="LOZIA"
               width={44}
               height={36}
-              className="h-9 w-11 rounded-full object-cover object-center"
+              className="h-9 w-9 rounded-full"
             />
 
             <span className="serif text-[25px] tracking-[.24em]">
-              LOZIA
+              OZIA
             </span>
           </Link>
 
@@ -206,7 +206,55 @@ export function BagDrawer() {
 
 export function Footer() {
   const { settings } = useCmsWorkspace();
-  return <footer className="bg-[hsl(var(--primary))] px-5 py-14 text-[hsl(var(--primary-foreground))] md:px-10"><div className="mx-auto grid max-w-[1440px] gap-12 md:grid-cols-[1.5fr_1fr_1fr_1.2fr]"><div><LoziaImage src="/images/lozia-logo.jpeg" alt="LOZIA — A distinctive expression of self" width={96} height={80} className="h-20 w-24 object-cover object-center" data-testid="img-brand-logo" /><p className="mt-4 max-w-[245px] text-sm leading-6 text-[hsl(var(--primary-foreground))]/65">{settings.footerLine}<br />Designed in Abuja. Made for everywhere.</p></div><div><span className="mono text-[hsl(var(--secondary))]">Discover</span><div className="mt-4 flex flex-col gap-3 text-sm text-[hsl(var(--primary-foreground))]/75"><Link href="/shop" data-testid="footer-link-shop">Shop all</Link><Link href="/about" data-testid="footer-link-about">Our story</Link><Link href="/contact" data-testid="footer-link-contact">Contact</Link><Link href="/size-guide" data-testid="footer-link-size">Size guide</Link></div></div><div><span className="mono text-[hsl(var(--secondary))]">Care</span><div className="mt-4 flex flex-col gap-3 text-sm text-[hsl(var(--primary-foreground))]/75"><Link href="/shipping" data-testid="footer-link-shipping">Shipping</Link><Link href="/returns" data-testid="footer-link-returns">Returns</Link><Link href="/privacy" data-testid="footer-link-privacy">Privacy</Link></div></div><div><span className="mono text-[hsl(var(--secondary))]">Stay close</span><p className="mt-4 text-sm leading-6 text-[hsl(var(--primary-foreground))]/65">Notes on new pieces, studio days and things worth keeping.</p><div className="mt-4 flex border-b border-[hsl(var(--primary-foreground))]/35 pb-2"><input className="w-full bg-transparent text-sm outline-none placeholder:text-[hsl(var(--primary-foreground))]/40" placeholder="Your email address" aria-label="Email address" data-testid="input-newsletter" /><button aria-label="Subscribe" data-testid="button-subscribe"><ArrowRight size={16}/></button></div></div></div><div className="mx-auto mt-14 max-w-[1440px] border-t border-[hsl(var(--primary-foreground))]/15 pt-5 text-[10px] uppercase tracking-[.16em] text-[hsl(var(--primary-foreground))]/45">{settings.footerLine}</div></footer>;
+  return <footer className="bg-[hsl(var(--primary))] px-5 py-14 text-[hsl(var(--primary-foreground))] md:px-10">
+    <div className="mx-auto grid max-w-[1440px] gap-12 md:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
+      <div>
+        <Link
+          href="/"
+          className="flex items-center gap-1"
+          data-testid="link-logo"
+        >
+        <LoziaImage
+          src="/images/logo-nav.jpeg"
+          alt="LOZIA"
+          width={44}
+          height={36}
+          className="h-8 w-8 rounded-full object-cover"
+        />
+
+        <span className="serif text-[28px] tracking-[.24em] text-[hsl(var(--muted))]">
+          OZIA
+        </span>
+        </Link>
+        <p className="mt-4 max-w-[245px] text-sm leading-6 text-[hsl(var(--primary-foreground))]/65">{settings.footerLine}<br />Designed in Abuja. Made for everywhere.</p>
+      </div>
+      <div>
+        <span className="mono text-[hsl(var(--secondary))]">Discover</span>
+        <div className="mt-4 flex flex-col gap-3 text-sm text-[hsl(var(--primary-foreground))]/75">
+          <Link href="/shop" data-testid="footer-link-shop">Shop all</Link>
+          <Link href="/about" data-testid="footer-link-about">Our story</Link>
+          <Link href="/contact" data-testid="footer-link-contact">Contact</Link>
+          <Link href="/size-guide" data-testid="footer-link-size">Size guide</Link>
+        </div>
+      </div>
+      <div>
+        <span className="mono text-[hsl(var(--secondary))]">Care</span>
+        <div className="mt-4 flex flex-col gap-3 text-sm text-[hsl(var(--primary-foreground))]/75">
+          <Link href="/shipping" data-testid="footer-link-shipping">Shipping</Link>
+          <Link href="/returns" data-testid="footer-link-returns">Returns</Link>
+          <Link href="/privacy" data-testid="footer-link-privacy">Privacy</Link>
+        </div>
+      </div>
+      <div>
+        <span className="mono text-[hsl(var(--secondary))]">Stay close</span>
+        <p className="mt-4 text-sm leading-6 text-[hsl(var(--primary-foreground))]/65">Notes on new pieces, studio days and things worth keeping.</p>
+        <div className="mt-4 flex border-b border-[hsl(var(--primary-foreground))]/35 pb-2">
+          <input className="w-full bg-transparent text-sm outline-none placeholder:text-[hsl(var(--primary-foreground))]/40" placeholder="Your email address" aria-label="Email address" data-testid="input-newsletter" />
+          <button aria-label="Subscribe" data-testid="button-subscribe"><ArrowRight size={16} /></button>
+        </div>
+      </div>
+    </div>
+  </footer>;
 }
 
 export function WhatsAppFloat() {

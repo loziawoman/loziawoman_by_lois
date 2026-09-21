@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   title: { default: 'LOZIA Fashion Storefront', template: '%s | LOZIA' },
   description,
   robots: { index: true, follow: true },
-  icons: { icon: '/favicon.svg' },
+  icons: { icon: '/favicon.ico' },
   openGraph: { type: 'website', title: 'LOZIA Fashion Storefront', description },
   twitter: { card: 'summary_large_image', title: 'LOZIA Fashion Storefront', description },
 };

@@ -1,0 +1,47 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { LoziaImage } from '@/components/lozia-image';
+import { QuickAdd } from '@/components/shop/quick-add';
+import { naira } from '@/lib/format';
+import { displayPrice, hasStock } from '@/lib/products/variants';
+import type { Product } from '@/types';
+
+export function ProductCard({ product, sizes }: { product: Product; sizes?: string }) {
+  const [quickAdd, setQuickAdd] = useState(false);
+  const { price, from } = displayPrice(product.basePrice, product.variants);
+  const soldOut = !hasStock(product.variants);
+  const image = product.images[0];
+  const href = `/shop/${product.slug}`;
+
+  return (
+    <div className="group" data-testid={`card-product-${product.id}`}>
+      <div className="relative aspect-[4/5] overflow-hidden bg-[hsl(var(--muted))]">
+        <Link href={href} className="absolute inset-0" aria-label={product.name} tabIndex={-1}>
+          <LoziaImage src={image?.src} alt={image?.alt ?? product.name} fill sizes={sizes ?? '(min-width: 768px) 33vw, 50vw'} className="image-hover object-cover" />
+        </Link>
+        {soldOut && <span className="absolute left-3 top-3 bg-[hsl(var(--card))] px-2 py-1 mono text-[9px]">Sold out</span>}
+        {!soldOut && (
+          <button
+            type="button"
+            onClick={() => setQuickAdd(true)}
+            className="absolute bottom-3 right-3 bg-[hsl(var(--card))] px-3 py-2 mono shadow-sm transition-all md:translate-y-3 md:opacity-0 md:focus:translate-y-0 md:focus:opacity-100 md:group-hover:translate-y-0 md:group-hover:opacity-100 motion-reduce:transition-none"
+            aria-label={`Quick add ${product.name}`}
+            data-testid={`button-quick-add-${product.id}`}
+          >
+            Quick add
+          </button>
+        )}
+      </div>
+      <Link href={href} className="flex justify-between gap-2 pt-4">
+        <span>
+          <span className="serif block text-[19px]">{product.name}</span>
+          <span className="mt-1 block text-xs text-[hsl(var(--muted-foreground))]">{product.category?.name}</span>
+        </span>
+        <span className="text-sm">{from ? 'From ' : ''}{naira(price)}</span>
+      </Link>
+      {quickAdd && <QuickAdd product={product} onClose={() => setQuickAdd(false)} />}
+    </div>
+  );
+}

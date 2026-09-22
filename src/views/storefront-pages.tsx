@@ -352,7 +352,7 @@ export function AboutPage() {
     <section className="mx-auto max-w-[1100px] px-5 py-20 md:grid md:grid-cols-[.8fr_1.2fr] md:gap-28 md:py-32">
       <span className="mono text-[hsl(var(--accent))]">Our point of view
         {/*<LoziaImage src="/images/muse-dress.jpg" alt="Muse dress" width={1024} height={1024} sizes="(min-width: 768px) 30vw, 100vw" className="h-auto w-full object-cover object-top" />*/}
-        <LoziaImage src="/images/muse-dress.jpg" alt="Muse dress" width={1024} height={1024} className="h-full w-full object-cover object-top" />
+       << <LoziaImage src="/images/muse-dress.jpg" alt="Muse dress" width={1024} height={1024} className="h-full w-full object-cover object-top" />
       </span>
       <div>
         <p className="serif text-4xl leading-tight md:text-6xl">LOZIA is an Abuja-born fashion label built around a simple belief: what you wear should leave room for who you are.</p>

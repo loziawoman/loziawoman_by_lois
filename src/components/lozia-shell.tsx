@@ -138,7 +138,7 @@ export function Header() {
 
             {/* Shop */}
             <Link
-              className="serif text-2xl"
+              className="serif text-9px"
               href="/shop"
               onClick={() => setMenu(false)}
               data-testid="mobile-link-shop"
@@ -148,7 +148,7 @@ export function Header() {
 
             {/* About */}
             <Link
-              className="serif text-2xl"
+              className="serif text-9px"
               href="/about"
               onClick={() => setMenu(false)}
               data-testid="mobile-link-about"
@@ -158,7 +158,7 @@ export function Header() {
 
             {/* Contact */}
             <Link
-              className="serif text-2xl"
+              className="serif text-9px"
               href="/contact"
               onClick={() => setMenu(false)}
               data-testid="mobile-link-contact"

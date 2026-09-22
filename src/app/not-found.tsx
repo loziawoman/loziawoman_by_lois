@@ -1,3 +1,3 @@
-import NotFound from '@/views/not-found';
+import NotFoundPage from '@/components/content/not-found-page';
 
-export default NotFound;
+export default NotFoundPage;

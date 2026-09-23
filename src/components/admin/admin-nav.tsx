@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { LoziaImage } from '@/components/lozia-image';
 import { Menu, X } from 'lucide-react';
 import { apiRequest } from '@/lib/api/client';
 
@@ -25,7 +26,7 @@ export function AdminNav({ items, email, role }: { items: NavItem[]; email: stri
         const active = item.href === '/admin' ? pathname === '/admin' : pathname.startsWith(item.href);
         return (
           <Link key={item.href} href={item.href} onClick={() => setOpen(false)} aria-current={active ? 'page' : undefined}
-            className={`flex min-h-11 items-center px-3 text-sm ${active ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'hover:bg-[hsl(var(--muted))]'}`}>
+            className={`flex min-h-11 items-center px-3 text-sm ${active ? 'bg-[hsl(var(--muted-foreground))] text-[hsl(var(--primary-foreground))]' : 'hover:bg-[hsl(var(--muted))]'}`}>
             {item.label}
           </Link>
         );
@@ -42,7 +43,10 @@ export function AdminNav({ items, email, role }: { items: NavItem[]; email: stri
         </button>
       </div>
       <aside id="admin-menu" className={`${open ? 'block' : 'hidden'} border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] p-4 md:block md:w-60 md:shrink-0 md:border-b-0 md:border-r`}>
-        <p className="serif mb-6 hidden text-2xl tracking-[.2em] md:block">LOZIA</p>
+        <Link href="/" className="flex items-center gap-1" data-testid="link-logo">
+          <LoziaImage src="/images/logo-nav.jpeg" alt="Logo" width={44} height={36} className="h-7 w-7 mb-6 rounded-full object-cover object-center" />
+          <span className="serif mb-6 hidden text-2xl tracking-[.2em] md:block">OZIA</span>
+        </Link>
         {links}
         <div className="mt-8 border-t border-[hsl(var(--border))] pt-4 text-xs">
           <p className="truncate" title={email}>{email}</p>

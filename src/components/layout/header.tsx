@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Search, ShoppingBag, X } from 'lucide-react';
+import { Menu, ShoppingBag, X } from 'lucide-react';
 import { LoziaImage } from '@/components/lozia-image';
 import { useCart } from '@/hooks/use-cart';
 
@@ -69,15 +69,6 @@ export function Header({ brandName }: { brandName: string }) {
 
         {/* RIGHT — DESKTOP SEARCH + BAG / MOBILE HAMBURGER */}
         <div className="flex items-center justify-end gap-4">
-          {/* Desktop search */}
-          <Link
-            href="/shop"
-            aria-label="Search"
-            data-testid="link-search"
-            className="hidden md:block"
-          >
-            <Search size={19} strokeWidth={1.3} />
-          </Link>
 
           {/* Desktop bag */}
           <button
@@ -143,17 +134,6 @@ export function Header({ brandName }: { brandName: string }) {
                 {link.label}
               </Link>
             ))}
-
-            {/* Search */}
-            <Link
-              href="/shop"
-              onClick={() => setMenu(false)}
-              className="flex items-center gap-3 serif text-9px"
-              data-testid="mobile-link-search"
-            >
-              <Search size={21} strokeWidth={1.3} />
-              Search
-            </Link>
 
             {/* Bag */}
             <button

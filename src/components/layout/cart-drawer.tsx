@@ -51,7 +51,7 @@ export function CartDrawer() {
             <div className="mb-5 text-[hsl(var(--accent))]"><ShoppingBag size={42} strokeWidth={0.8} /></div>
             <h3 className="serif text-2xl">Nothing here yet.</h3>
             <p className="mt-2 max-w-[240px] text-sm text-[hsl(var(--muted-foreground))]">Take your time. The collection is waiting.</p>
-            <Link href="/shop" onClick={() => cart.setOpen(false)} className="mt-7 border border-[hsl(var(--primary))] px-6 py-3 mono transition-colors hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--primary-foreground))]" data-testid="link-bag-shop">
+            <Link href="/shop" onClick={() => cart.setOpen(false)} className="mt-7 border border-[hsl(var(--primary))] px-6 py-3 mono transition-colors hover:bg-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--muted))]" data-testid="link-bag-shop">
               Explore the collection
             </Link>
           </div>
@@ -88,7 +88,7 @@ export function CartDrawer() {
             <div className="border-t border-[hsl(var(--border))] px-6 py-6">
               <div className="flex justify-between text-sm"><span>Subtotal</span><span>{naira(cart.subtotal)}</span></div>
               <p className="mt-2 text-xs text-[hsl(var(--muted-foreground))]">Delivery is calculated at checkout. Final prices are confirmed when you place your order.</p>
-              <Link href="/checkout" onClick={() => { cart.setOpen(false); track({ name: 'checkout_started', props: { items: cart.count } }); }} className="mt-5 flex w-full items-center justify-center bg-[hsl(var(--primary))] px-6 py-4 mono text-[hsl(var(--primary-foreground))]" data-testid="link-checkout">
+              <Link href="/checkout" onClick={() => { cart.setOpen(false); track({ name: 'checkout_started', props: { items: cart.count } }); }} className="mt-5 flex w-full items-center justify-center bg-[hsl(var(--muted-foreground))] px-6 py-4 mono text-[hsl(var(--primary-foreground))]" data-testid="link-checkout">
                 Checkout
               </Link>
             </div>

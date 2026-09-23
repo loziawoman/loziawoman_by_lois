@@ -99,10 +99,10 @@ export function PaymentPanel(props: {
 
       {canSubmit && !done && (
         <form onSubmit={submit} className="mt-8 grid gap-5 border-t border-[hsl(var(--border))] pt-8">
-          <p className="text-sm leading-7 text-[hsl(var(--muted-foreground))]">Made the transfer? Tell us. Attaching a receipt helps us verify faster, but it is optional. Your order is not marked as paid until the studio has checked it.</p>
+          <p className="text-sm leading-7 text-[hsl(var(--muted-foreground))]">Made the transfer? Tell us. Attach a receipt in any of the format below to help us verify faster. Your order is not marked as paid until the studio has checked it.</p>
           <div className="grid gap-2 text-xs">
-            <label htmlFor="receipt" className="mono">Payment receipt (optional, JPG, PNG, WebP or PDF, up to 4 MB)</label>
-            <input ref={fileRef} id="receipt" name="receipt" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" onChange={(e) => setFileName(e.target.files?.[0]?.name ?? '')} className="min-h-11 text-sm file:mr-4 file:border file:border-[hsl(var(--border))] file:bg-transparent file:px-4 file:py-2" />
+            <label htmlFor="receipt" className="mono">Payment receipt (JPG, PNG, WebP or PDF, up to 4 MB) *</label>
+            <input ref={fileRef} id="receipt" name="receipt" type="file" required accept="image/jpeg,image/png,image/webp,application/pdf" onChange={(e) => setFileName(e.target.files?.[0]?.name ?? '')} className="min-h-11 text-sm file:mr-4 file:border file:border-[hsl(var(--border))] file:bg-transparent file:px-4 file:py-2" />
             {fileName && <span className="text-[hsl(var(--muted-foreground))]">Selected: {fileName}</span>}
           </div>
           <div className="grid gap-2 text-xs">

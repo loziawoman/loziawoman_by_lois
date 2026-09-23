@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ProductView } from '@/components/product/product-view';
 import { ProductCard } from '@/components/shop/product-card';
@@ -50,7 +51,13 @@ export default async function ProductPage({ params, searchParams }: Props) {
   };
 
   return (
-    <main className="mx-auto max-w-[1440px] px-5 py-8 md:px-10 md:py-14">
+    <main className="mx-auto max-w-[1440px] px-5 py-8 md:px-10 md:py-10">
+      <Link
+        href="/shop"
+        className="mb-8 inline-flex items-center border border-[hsl(var(--border))] px-5 py-3 mono text-sm transition-colors hover:bg-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary-foreground))] md:mb-10 md:px-6 md:py-3.5"
+      >
+        ← Back to Shop
+      </Link>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
       <ProductView key={`${product.id}:${Array.isArray(colour) ? colour[0] : colour ?? ''}`} product={product} initialColour={Array.isArray(colour) ? colour[0] : colour} />
       {related.length > 0 && (
@@ -62,6 +69,6 @@ export default async function ProductPage({ params, searchParams }: Props) {
           </div>
         </section>
       )}
-    </main>
+      </main>
   );
 }

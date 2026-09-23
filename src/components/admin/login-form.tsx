@@ -4,7 +4,9 @@ import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import { TextField } from '@/components/forms/fields';
+import { LoziaImage } from '@/components/lozia-image';
 import { apiRequest, jsonBody } from '@/lib/api/client';
+import Link from 'next/link';
 
 export function AdminLoginForm({ configured, forbidden }: { configured: boolean; forbidden: boolean }) {
   const router = useRouter();
@@ -25,7 +27,10 @@ export function AdminLoginForm({ configured, forbidden }: { configured: boolean;
   return (
     <div className="grain flex min-h-[100dvh] items-center justify-center px-5 py-16">
       <div className="w-full max-w-[420px]">
-        <p className="serif text-[34px] leading-none tracking-[.2em]">LOZIA</p>
+        <Link href="/" className="flex items-center gap-1" data-testid="link-logo">
+          <LoziaImage src="/images/logo-nav.jpeg" alt="Logo" width={44} height={36} className="h-8 w-8 rounded-full object-cover object-center" />
+          <span className="serif text-[34px] leading-0 tracking-[.2em]">OZIA</span>
+        </Link>
         <p className="mono mt-2 text-[hsl(var(--muted-foreground))]">Studio desk</p>
         {configured ? (
           <form onSubmit={submit} className="mt-12 grid gap-5" noValidate>

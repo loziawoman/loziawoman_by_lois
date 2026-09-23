@@ -15,7 +15,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     { href: '/admin/messages', label: 'Messages' },
     ...(can(user.role, 'settings:write') ? [{ href: '/admin/content', label: 'Content & settings' }] : []),
     ...(can(user.role, 'audit:read') ? [{ href: '/admin/audit', label: 'Audit log' }] : []),
-    { href: '/', label: 'View site' },
   ];
   return (
     <div className="flex min-h-[100dvh] flex-col md:flex-row">

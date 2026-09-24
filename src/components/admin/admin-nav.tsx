@@ -45,7 +45,7 @@ export function AdminNav({ items, email, role }: { items: NavItem[]; email: stri
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
-      <aside id="admin-menu" className={`${open ? 'block' : 'hidden'} border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] p-4 md:block md:w-60 md:shrink-0 md:border-b-0 md:border-r`}>
+      <aside id="admin-menu" className={`${open ? 'block' : 'hidden'} border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] p-4 md:fixed md:inset-y-0 md:left-0 md:z-40 md:fixed md:inset-y-0 md:left-0 md:z-40 md:block md:w-60 md:overflow-y-auto md:overflow-y-auto md:shrink-0 md:border-b-0 md:border-r`}>
         <Link href="/" className="flex items-center gap-1" data-testid="link-logo">
           <LoziaImage src="/images/logo-nav.jpeg" alt="Logo" width={44} height={36} className="h-7 w-7 mb-6 hidden md:block rounded-full object-cover object-center" />
           <span className="serif mb-6 hidden text-2xl tracking-[.2em] md:block">OZIA</span>

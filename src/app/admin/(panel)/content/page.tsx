@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { HomepageGroup, PolicyEditor, ReviewSettingsGroup, ShippingGroup, SimpleGroup, SizeGuideEditor, SiteImagesGroup } from '@/components/admin/settings-forms';
+import { HomepageGroup, PolicyEditor,  ShippingGroup, SimpleGroup, SizeGuideEditor, SiteImagesGroup } from '@/components/admin/settings-forms';
 import { PageHeader } from '@/components/admin/ui';
 import { loadAdminSettings } from '@/lib/admin/queries';
 import { requirePermission } from '@/lib/auth/session';
@@ -35,7 +35,6 @@ export default async function ContentPage() {
       ]} values={{ bank_name: bank.bankName, bank_account_name: bank.accountName, bank_account_number: bank.accountNumber }} />
       <ShippingGroup rates={s.shippingRates} reservationHours={s.reservationHours} />
       <HomepageGroup homepage={s.homepage} aboutStory={s.aboutStory} />
-      <ReviewSettingsGroup enabled={s.reviewSubmissionEnabled} />
       <SiteImagesGroup images={s.siteImages} />
       <PolicyEditor settingKey="policy_shipping" policy={s.policies.shipping} />
       <PolicyEditor settingKey="policy_returns" policy={s.policies.returns} />

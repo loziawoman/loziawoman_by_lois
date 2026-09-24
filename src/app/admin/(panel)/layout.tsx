@@ -20,7 +20,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   return (
     <div className="flex min-h-[100dvh] flex-col md:flex-row">
       <AdminNav items={items} email={user.email} role={user.role} />
-      <main id="main" className="min-w-0 flex-1 px-4 py-8 md:px-10 md:py-12">{children}</main>
+      <main id="main" className="min-w-0 flex-1 px-4 py-8 md:ml-60 md:px-10 md:py-12">{children}</main>
     </div>
   );
 }

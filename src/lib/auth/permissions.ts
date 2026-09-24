@@ -6,14 +6,16 @@ export type Permission =
   | 'inventory:write'
   | 'orders:read'
   | 'orders:write'
+  | 'orders:delete'
   | 'payments:verify'
   | 'customers:read'
+  | 'customers:write'
   | 'settings:write'
   | 'audit:read'
   | 'users:manage';
 
 const STAFF: Permission[] = ['catalog:read', 'inventory:write', 'orders:read', 'orders:write', 'customers:read'];
-const ADMIN: Permission[] = [...STAFF, 'catalog:write', 'payments:verify', 'settings:write', 'audit:read'];
+const ADMIN: Permission[] = [...STAFF, 'catalog:write', 'payments:verify', 'settings:write', 'audit:read', 'orders:delete', 'customers:write'];
 
 const GRANTS: Record<UserRole, Permission[]> = {
   customer: [],

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Empty, Pill, PageHeader, cellCls, fulfillmentTone, inputCls, paymentTone, Table, btnCls, btnGhostCls } from '@/components/admin/ui';
 import { requirePermission } from '@/lib/auth/session';
+import { DeleteRecordButton } from '@/components/admin/delete-record-button';
 import { formatDateTime, naira } from '@/lib/format';
 import { listOrders } from '@/lib/orders/admin-queries';
 import type { FulfillmentStatus, PaymentStatus } from '@/types';
@@ -32,7 +33,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
         <Link className={btnGhostCls} href="/admin/orders">Clear</Link>
       </form>
       {orders.length === 0 ? <Empty>No orders match.</Empty> : (
-        <Table head={['Order', 'Customer', 'Total', 'Payment', 'Fulfilment', 'Placed']}>
+        <Table head={['Order', 'Customer', 'Total', 'Payment', 'Fulfilment', 'Placed', '']}>
           {orders.map((o) => (
             <tr key={o.id}>
               <td className={cellCls}><Link className="underline-link" href={`/admin/orders/${o.id}`}>{o.orderNumber}</Link></td>
@@ -41,6 +42,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
               <td className={cellCls}><Pill tone={paymentTone(o.paymentStatus)}>{o.paymentStatus}</Pill></td>
               <td className={cellCls}><Pill tone={fulfillmentTone(o.fulfillmentStatus)}>{o.fulfillmentStatus}</Pill></td>
               <td className={cellCls}>{formatDateTime(o.createdAt)}</td>
+              <td className={cellCls}><DeleteRecordButton endpoint={`/api/admin/orders/${o.id}`} confirmText={`Delete order ${o.orderNumber}? This cannot be undone.`} /></td>
             </tr>
           ))}
         </Table>

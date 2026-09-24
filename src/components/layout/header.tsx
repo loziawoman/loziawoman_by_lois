@@ -11,6 +11,7 @@ const links = [
   { href: '/shop', label: 'Shop' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
+  { href: '/#reviews', label: 'Reviews' },
 ];
 
 function Logo({ logo, onClick }: { logo: string; onClick?: () => void }) {
@@ -28,7 +29,7 @@ export function Header({ brandName, logo }: { brandName: string; logo: string })
   const [menu, setMenu] = useState(false);
 
   return (
-    <header className="relative z-30 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))]/95 backdrop-blur">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))]/95 backdrop-blur">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-[hsl(var(--card))] focus:px-4 focus:py-2"

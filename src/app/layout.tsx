@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import { connection } from 'next/server';
 import { DM_Mono, DM_Sans, Playfair_Display } from 'next/font/google';
 import { Providers } from '@/components/providers';
-import { publicWorkspace } from '@/lib/cms';
-import { readWorkspace } from '@/server/cms-store';
 import './globals.css';
 
 const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-dm-sans', display: 'swap' });
@@ -110,14 +107,11 @@ export const viewport: Viewport = {
 export const dynamic = 'force-dynamic';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  await connection();
-  // Every page gets a fresh copy of the content so admin edits show up straight away.
-  const workspace = publicWorkspace(await readWorkspace());
 
   return (
     <html lang="en" className={`${dmSans.variable} ${playfair.variable} ${dmMono.variable}`}>
       <body>
-        <Providers workspace={workspace}>{children}</Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

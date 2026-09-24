@@ -26,7 +26,7 @@ export default async function ContactPage() {
         <div className="flex items-center bg-[hsl(var(--accent))] p-10 md:p-20">
           <div>
             <h2 className="serif mt-5 text-5xl">Come<br />by.</h2>
-            <p className="mt-6 max-w-[320px] text-sm leading-7">For fittings, appointments and questions about a piece, get in touch.</p>
+            <p className="mt-6 max-w-[320px] text-sm leading-7">Looking for a custom order or a modification to one of our ready-to-wear pieces? Get in touch with us, and we’ll be happy to assist.</p>
             {(settings.studioLocation || settings.studioHours) && <p className="mt-6 text-sm">{settings.studioHours}{settings.studioHours && settings.studioLocation ? <br /> : null}{settings.studioLocation}</p>}
             <div className="mt-8 flex flex-wrap gap-5">
               {settings.contactEmail && <a href={`mailto:${settings.contactEmail}`} className="inline-flex min-h-11 items-center gap-2 border-b border-current pb-2 mono" data-testid="link-email-us">Email us <ArrowRight size={14} aria-hidden="true" /></a>}

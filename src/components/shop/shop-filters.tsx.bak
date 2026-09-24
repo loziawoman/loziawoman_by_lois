@@ -2,12 +2,12 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { Category, ProductSize } from '@/types';
+import type { Category, ProductColour, ProductSize } from '@/types';
 
 const field = 'h-11 w-full border border-[hsl(var(--border))] bg-transparent px-3 text-sm';
 
 /** Filters live in the URL (for example /shop?category=dresses&colour=burgundy) so any view can be shared or bookmarked. */
-export function ShopFilters({ categories, sizes }: { categories: Category[]; sizes: ProductSize[] }) {
+export function ShopFilters({ categories, colours, sizes }: { categories: Category[]; colours: ProductColour[]; sizes: ProductSize[] }) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -29,7 +29,7 @@ export function ShopFilters({ categories, sizes }: { categories: Category[]; siz
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
-  const active = ['category', 'size', 'price', 'availability', 'sort', 'q'].some((key) => params.get(key));
+  const active = ['category', 'colour', 'size', 'price', 'availability', 'sort', 'q'].some((key) => params.get(key));
   const select = (key: string, label: string, options: { value: string; label: string }[]) => (
     <label className="grid gap-1 text-xs">
       <span className="mono">{label}</span>
@@ -49,6 +49,7 @@ export function ShopFilters({ categories, sizes }: { categories: Category[]; siz
           <input type="search" className={field} value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search the collection" />
         </label>
         {select('category', 'Category', categories.map((c) => ({ value: c.slug, label: c.name })))}
+        {select('colour', 'Colour', colours.map((c) => ({ value: c.slug, label: c.name })))}
         {select('size', 'Size', sizes.map((s) => ({ value: s.name, label: s.name })))}
         {select('price', 'Price', [{ value: 'under-100000', label: 'Under ₦100,000' }, { value: '100000-plus', label: '₦100,000 and over' }])}
         {select('availability', 'Availability', [{ value: 'in-stock', label: 'In stock' }, { value: 'sold-out', label: 'Sold out' }])}

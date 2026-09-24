@@ -1,4 +1,4 @@
-# LOZIA — Client & Developer Guide
+# LOZIA - The Client & Developer Guide
 
 LOZIA is a contemporary women's fashion e-commerce website built for a fashion brand operating from Abuja, Nigeria.
 
@@ -9,7 +9,7 @@ This README is intentionally written for two audiences:
 
 ---
 
-# Part I — Client / Brand Guide
+# Part I - The Client / Brand Guide
 
 ## 1. What the website is
 
@@ -307,7 +307,7 @@ The website contains fallbacks/placeholders for information that should not be i
 
 ---
 
-# Part II — Developer Guide
+# Part II - The Developer Guide
 
 ## 10. Technology stack
 

@@ -2,18 +2,15 @@
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Minus, Plus, ShoppingBag, X } from 'lucide-react';
 import { LoziaImage } from '@/components/lozia-image';
 import { useCart } from '@/hooks/use-cart';
 import { MAX_LINE_QUANTITY } from '@/lib/cart/cart';
 import { naira } from '@/lib/format';
 import { track } from '@/lib/analytics';
-import { addToWishlist } from '@/lib/wishlist/wishlist';
 
 export function CartDrawer() {
   const cart = useCart();
-  const router = useRouter();
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -84,19 +81,6 @@ export function CartDrawer() {
                       </div>
                       <span className="text-sm">{naira(item.unitPrice * item.quantity)}</span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        addToWishlist({ productId: item.productId, slug: item.slug });
-                        cart.remove(item.variantId);
-                        cart.setOpen(false);
-                        router.push('/wishlist');
-                      }}
-                      className="mt-3 mono text-[10px] underline underline-offset-4"
-                      data-testid={`button-save-later-${item.variantId}`}
-                    >
-                      Save for later
-                    </button>
                   </div>
                 </li>
               ))}

@@ -15,8 +15,7 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
   const { supabase } = await requirePermission('customers:read');
   const parsed = uuid.safeParse((await params).id);
   if (!parsed.success) notFound();
-  const id = parsed.data;
-  const customer = await loadCustomer(supabase, id);
+  const customer = await loadCustomer(supabase, parsed.data);
   if (!customer) notFound();
   const orders = await listOrders(supabase, { customerId: customer.id }, 100);
 

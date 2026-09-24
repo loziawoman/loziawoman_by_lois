@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Minus, Plus } from 'lucide-react';
+import { GarmentColorizer } from '@/components/garment-colorizer';
 import { LoziaImage } from '@/components/lozia-image';
 import { useCart } from '@/hooks/use-cart';
 import { track } from '@/lib/analytics';
@@ -26,6 +27,7 @@ export function ProductView({ product, initialColour }: { product: Product; init
   const size = product.sizes.find((s) => s.id === selection.sizeId);
   const variant = useMemo(() => findVariant(product.variants, selection.colourId, selection.sizeId), [product.variants, selection]);
   const image = product.images.find((i) => i.id === imageId) ?? product.images[0];
+  const original = product.colours.find((c) => c.id === product.originalColourId);
   const purchasable = isPurchasable(variant);
   const status = variant ? stockStatus(variant.available) : { kind: 'out' as const, label: 'Unavailable' };
   const maxQuantity = Math.min(MAX_LINE_QUANTITY, variant?.available ?? 1);
@@ -48,14 +50,14 @@ export function ProductView({ product, initialColour }: { product: Product; init
     <div className="grid gap-10 md:grid-cols-[1.1fr_.9fr] md:gap-16">
       <div>
         <div className="relative aspect-[4/5] overflow-hidden bg-[hsl(var(--muted))]">
-          <LoziaImage
-            src={image?.src}
-            alt={image?.alt ?? product.name}
-            fill
-            sizes="(min-width: 768px) 55vw, 100vw"
-            loading="eager"
-            className="object-cover"
-          />
+          {image && colour && original ? (
+            <GarmentColorizer
+              src={image.src} target={colour.hex} original={original.name} originalHex={original.hex}
+              alt={`${image.alt}${colour ? `, in ${colour.name}` : ''}`} className="h-full w-full object-cover" mask={image.maskSrc ?? undefined}
+            />
+          ) : (
+            <LoziaImage src={image?.src} alt={image?.alt ?? product.name} fill sizes="(min-width: 768px) 55vw, 100vw" loading="eager" className="object-cover" />
+          )}
         </div>
         {product.images.length > 1 && (
           <ul className="mt-3 grid grid-cols-5 gap-2" aria-label="Product images">

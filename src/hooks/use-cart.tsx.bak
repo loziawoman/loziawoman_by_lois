@@ -3,7 +3,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { CartItem } from '@/types';
 import { addToCart, cartCount, cartSubtotal, parseStoredCart, removeFromCart, setQuantity } from '@/lib/cart/cart';
-import { removeFromWishlist } from '@/lib/wishlist/wishlist';
 
 const KEY = 'lozia-cart-v2';
 
@@ -34,8 +33,6 @@ function useCartState() {
 
   const add = useCallback((item: CartItem) => {
     setItems((current) => addToCart(current, item));
-    // Once a saved piece enters the bag, it leaves Favorites automatically.
-    removeFromWishlist(item.productId);
     setOpen(true);
   }, []);
   const update = useCallback((variantId: string, quantity: number) => setItems((current) => setQuantity(current, variantId, quantity)), []);

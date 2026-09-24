@@ -1,0 +1,151 @@
+'use client';
+
+import Link from 'next/link';
+import { Heart, Trash2 } from 'lucide-react';
+import { LoziaImage } from '@/components/lozia-image';
+import { WishlistButton } from '@/components/wishlist/wishlist-button';
+import { useWishlist } from '@/hooks/use-wishlist';
+import { naira } from '@/lib/format';
+
+type WishlistProduct = {
+  id: string;
+  slug: string;
+  name: string;
+  price: number;
+  image: string | null;
+  alt: string;
+};
+
+export function WishlistContent({
+  products,
+}: {
+  products: WishlistProduct[];
+}) {
+  const { items, count, hydrated, clear, remove } = useWishlist();
+
+  if (!hydrated) {
+    return (
+      <main className="mx-auto max-w-[1440px] px-5 py-20 md:px-10">
+        <div className="h-80 animate-pulse bg-[hsl(var(--muted))]" />
+      </main>
+    );
+  }
+
+  const saved = items
+    .map((item) => products.find((product) => product.id === item.productId))
+    .filter((product): product is WishlistProduct => Boolean(product));
+
+  const staleCount = count - saved.length;
+
+  return (
+    <main className="mx-auto max-w-[1440px] px-5 py-12 md:px-10 md:py-20">
+      <div className="flex items-end justify-between gap-6">
+        <div>
+          <span className="mono text-[hsl(var(--accent))]">Favorites</span>
+          <h1 className="serif mt-3 text-6xl md:text-8xl">Saved pieces</h1>
+          <p className="mt-4 text-sm text-[hsl(var(--muted-foreground))]">
+            {count} {count === 1 ? 'piece' : 'pieces'} saved
+          </p>
+        </div>
+
+        {count > 0 && (
+          <button
+            type="button"
+            onClick={clear}
+            className="mono hidden items-center gap-2 border-b border-current pb-1 text-xs md:flex"
+          >
+            <Trash2 size={14} aria-hidden="true" />
+            Clear all
+          </button>
+        )}
+      </div>
+
+      {staleCount > 0 && (
+        <div className="mt-8 border border-[hsl(var(--border))] px-4 py-3 text-sm">
+          {staleCount} saved {staleCount === 1 ? 'piece is' : 'pieces are'} no
+          longer available in the collection.
+        </div>
+      )}
+
+      {saved.length === 0 ? (
+        <section className="flex min-h-[45vh] flex-col items-center justify-center text-center">
+          <Heart size={32} strokeWidth={1.2} aria-hidden="true" />
+          <h2 className="serif mt-5 text-3xl">Nothing saved yet.</h2>
+          <p className="mt-3 max-w-md text-sm leading-7 text-[hsl(var(--muted-foreground))]">
+            Tap the heart on any LOZIA piece to keep it here for later.
+          </p>
+          <Link
+            href="/shop"
+            className="mt-8 border border-[hsl(var(--foreground))] px-6 py-3 mono text-xs"
+          >
+            Explore the collection
+          </Link>
+        </section>
+      ) : (
+        <>
+          <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-3 md:gap-x-6 lg:grid-cols-4">
+            {saved.map((product) => (
+              <article key={product.id} className="group">
+                <div className="relative aspect-[4/5] overflow-hidden bg-[hsl(var(--muted))]">
+                  <Link
+                    href={`/shop/${product.slug}`}
+                    className="absolute inset-0"
+                    aria-label={product.name}
+                  >
+                    <LoziaImage
+                      src={product.image}
+                      alt={product.alt}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                      className="image-hover object-cover"
+                    />
+                  </Link>
+                  <div className="pointer-events-none absolute right-3 top-3 z-10 translate-y-1 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 motion-reduce:transition-none">
+                    <WishlistButton
+                      productId={product.id}
+                      slug={product.slug}
+                      className="h-10 w-10 bg-[hsl(var(--card))]/95 shadow-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-start justify-between gap-3 pt-4">
+                  <div>
+                    <Link
+                      href={`/shop/${product.slug}`}
+                      className="serif block text-[19px]"
+                    >
+                      {product.name}
+                    </Link>
+                    <span className="mt-1 block text-sm">
+                      {naira(product.price)}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => remove(product.id)}
+                    className="pt-1 text-[hsl(var(--muted-foreground))]"
+                    aria-label={`Remove ${product.name} from favorites`}
+                    title="Remove"
+                  >
+                    <Trash2 size={16} strokeWidth={1.25} />
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={clear}
+            className="mt-10 inline-flex items-center gap-2 border-b border-current pb-1 mono text-xs md:hidden"
+          >
+            <Trash2 size={14} aria-hidden="true" />
+            Clear all
+          </button>
+        </>
+      )}
+    </main>
+  );
+}

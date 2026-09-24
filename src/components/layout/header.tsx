@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Menu, ShoppingBag, X } from 'lucide-react';
 import { LoziaImage } from '@/components/lozia-image';
 import { useCart } from '@/hooks/use-cart';
+import { useWishlist } from '@/hooks/use-wishlist';
 
 const links = [
   { href: '/shop', label: 'Shop' },
@@ -13,6 +14,14 @@ const links = [
   { href: '/contact', label: 'Contact' },
   { href: '/#reviews', label: 'Reviews' },
 ];
+
+function HeartIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true">
+      <path d="M20.8 8.9c0 5.5-8.8 10.3-8.8 10.3S3.2 14.4 3.2 8.9A5.1 5.1 0 0 1 12 5.6a5.1 5.1 0 0 1 8.8 3.3Z" />
+    </svg>
+  );
+}
 
 function Logo({ logo, onClick }: { logo: string; onClick?: () => void }) {
   return (
@@ -25,6 +34,7 @@ function Logo({ logo, onClick }: { logo: string; onClick?: () => void }) {
 
 export function Header({ brandName, logo }: { brandName: string; logo: string }) {
   const cart = useCart();
+  const wishlist = useWishlist();
   const pathname = usePathname();
   const [menu, setMenu] = useState(false);
 
@@ -70,6 +80,27 @@ export function Header({ brandName, logo }: { brandName: string; logo: string })
 
         {/* RIGHT — DESKTOP SEARCH + BAG / MOBILE HAMBURGER */}
         <div className="flex items-center justify-end gap-4">
+
+          {/* Desktop favorites */}
+          <Link
+            href="/wishlist"
+            className="relative hidden items-center gap-2 mono md:flex"
+            aria-label={`Open favorites${wishlist.count > 0 ? `, ${wishlist.count} saved` : ''}`}
+            data-testid="header-wishlist"
+          >
+            <span>Favorites</span>
+            <span className="relative">
+              <HeartIcon />
+              {wishlist.count > 0 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[hsl(var(--accent))] px-1 text-[9px] text-white"
+                >
+                  {wishlist.count}
+                </span>
+              )}
+            </span>
+          </Link>
 
           {/* Desktop bag */}
           <button
@@ -135,6 +166,26 @@ export function Header({ brandName, logo }: { brandName: string; logo: string })
                 {link.label}
               </Link>
             ))}
+
+            <Link
+              href="/wishlist"
+              onClick={() => setMenu(false)}
+              className="flex items-center gap-3 serif text-9px"
+              data-testid="mobile-link-favorites"
+            >
+              <span className="relative">
+                <HeartIcon />
+                {wishlist.count > 0 && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[hsl(var(--accent))] px-1 text-[9px] text-white"
+                  >
+                    {wishlist.count}
+                  </span>
+                )}
+              </span>
+              Favorites
+            </Link>
 
             {/* Bag */}
             <button

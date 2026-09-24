@@ -73,7 +73,7 @@ export function ReviewsSection({ reviewSubmissionEnabled }: { reviewSubmissionEn
 
   return (
     <>
-      <section className="relative overflow-hidden bg-[hsl(var(--background))]" aria-labelledby="reviews-heading">
+      <section id="reviews" className="scroll-mt-[90px] relative overflow-hidden bg-[hsl(var(--background))]" aria-labelledby="reviews-heading">
         <div className="pointer-events-none absolute -bottom-48 -left-24 h-[520px] w-[520px] rounded-full border-2 border-[hsl(var(--accent))]/20" />
         <div className="mx-auto max-w-[1440px] px-5 py-20 md:px-10 md:py-28">
           <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between md:gap-12">

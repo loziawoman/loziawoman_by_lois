@@ -1,5 +1,7 @@
 import { adminRoute } from '@/lib/api/admin-route';
 import { ok, unwrap } from '@/lib/api/response';
+import { RECEIPT_BUCKET } from '@/lib/env';
+import { logAudit } from '@/lib/audit/log';
 import { uuid } from '@/lib/validation/common';
 
 export const DELETE = adminRoute<{ id: string }>(
@@ -21,20 +23,13 @@ export const DELETE = adminRoute<{ id: string }>(
     const paths = result?.receipt_paths ?? [];
 
     if (paths.length) {
-      await supabase.storage.from('receipts').remove(paths);
+      await supabase.storage.from(RECEIPT_BUCKET).remove(paths);
     }
 
-    // Keep this audit call only when the project's audit helper exists.
-    try {
-      const { logAudit } = await import('@/lib/audit');
-      await logAudit(supabase, user, 'customer.deleted', 'customer', id, {
-        customer_name: result?.customer_name ?? null,
-        deleted_orders: result?.deleted_orders ?? 0,
-      });
-    } catch {
-      // Deletion itself has already succeeded; audit logging must not make
-      // a successful deletion look like a failure.
-    }
+    await logAudit(supabase, user, 'customer.deleted', 'customer', id, {
+      customer_name: result?.customer_name ?? null,
+      deleted_orders: result?.deleted_orders ?? 0,
+    });
 
     return ok({
       id,

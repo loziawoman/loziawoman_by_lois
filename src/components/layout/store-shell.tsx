@@ -19,7 +19,7 @@ export function StoreShell({
       <div className="grain min-h-[100dvh]">
         <Header brandName={settings.brandName} logo={settings.siteImages.logo.src} />
 
-        <div id="main" tabIndex={-1} className="outline-none">
+        <div id="main" tabIndex={-1} className="pt-[74px] outline-none">
           {children}
         </div>
 

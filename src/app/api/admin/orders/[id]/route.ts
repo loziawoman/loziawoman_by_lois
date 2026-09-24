@@ -3,6 +3,7 @@ import { fail, ok, parseJson, unwrap } from '@/lib/api/response';
 import { can } from '@/lib/auth/permissions';
 import { notify } from '@/lib/notifications';
 import { orderActionSchema } from '@/lib/validation/admin';
+import { RECEIPT_BUCKET } from '@/lib/env';
 import { uuid } from '@/lib/validation/common';
 
 /**
@@ -58,7 +59,7 @@ export const DELETE = adminRoute<{ id: string }>('orders:delete', async ({ supab
 
   const paths = result?.receipt_paths ?? [];
   if (paths.length) {
-    await supabase.storage.from('receipts').remove(paths);
+    await supabase.storage.from(RECEIPT_BUCKET).remove(paths);
   }
 
   return ok({ id, deleted: true, orderNumber: result?.order_number ?? null });

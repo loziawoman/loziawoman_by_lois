@@ -129,6 +129,10 @@ export type ShippingRates = {
 export type PolicySection = { title: string; body: string };
 export type PolicyContent = { title: string; intro: string; sections: PolicySection[]; isPlaceholder: boolean };
 
+export type SiteImageKey = 'logo' | 'home_hero' | 'home_tailoring' | 'home_everyday' | 'home_evening' | 'home_editorial' | 'about_hero' | 'about_editorial' | 'contact_hero';
+export type SiteImage = { src: string; alt: string; storagePath: string | null };
+export type SiteImages = Record<SiteImageKey, SiteImage>;
+
 export type HomepageContent = {
   announcement: string;
   eyebrow: string;
@@ -157,6 +161,7 @@ export type SiteSettings = {
   policies: { shipping: PolicyContent; returns: PolicyContent; privacy: PolicyContent; terms: PolicyContent };
   sizeGuide: SizeGuideContent;
   aboutStory: string;
+  siteImages: SiteImages;
 };
 
 /** Bank details are never part of the public settings. They are only shown to someone holding a valid order link. */

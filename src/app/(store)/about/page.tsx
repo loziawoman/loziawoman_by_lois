@@ -19,7 +19,7 @@ export default async function AboutPage() {
             <p className="mt-8 max-w-[420px] text-base leading-7 text-[hsl(var(--primary-foreground))]/70">An Abuja-born fashion label for the woman becoming more of herself, one considered piece at a time.</p>
           </div>
           <div className="relative aspect-[4/5] overflow-hidden bg-[hsl(var(--muted))]">
-            <LoziaImage src="/images/lozia-about-hero.png" alt="Lozia herself, in a dark tailored suit" fill sizes="(min-width: 768px) 55vw, 100vw" loading="eager" className="object-cover object-top" />
+            <LoziaImage src={s.siteImages.about_hero.src} alt={s.siteImages.about_hero.alt} fill sizes="(min-width: 768px) 55vw, 100vw" loading="eager" className="object-cover object-top" />
             <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--primary))]/45 via-transparent to-transparent" />
             <span className="absolute bottom-4 left-4 bg-[hsl(var(--card))]/90 px-3 py-2 mono text-[9px] text-[hsl(var(--foreground))]">The LOZIA woman</span>
           </div>
@@ -29,7 +29,7 @@ export default async function AboutPage() {
       <section className="mx-auto max-w-[1100px] px-5 py-20 md:grid md:grid-cols-[.8fr_1.2fr] md:gap-28 md:py-32">
         <div>
           <span className="mono text-[hsl(var(--accent))]">Our point of view</span>
-          <LoziaImage src="/images/muse-dress.jpg" alt="Muse dress" width={1024} height={1024} className="h-full w-full object-cover object-top" />
+          <LoziaImage src={s.siteImages.about_editorial.src} alt={s.siteImages.about_editorial.alt} width={1024} height={1024} className="h-full w-full object-cover object-top" />
         </div>
         <div>
           <p className="serif mt-10 text-4xl leading-tight md:mt-0 md:text-6xl">LOZIA is an Abuja-born fashion label built around a simple belief: what you wear should leave room for who you are.</p>

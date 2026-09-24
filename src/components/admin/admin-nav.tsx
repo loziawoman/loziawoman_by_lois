@@ -37,14 +37,17 @@ export function AdminNav({ items, email, role }: { items: NavItem[]; email: stri
   return (
     <>
       <div className="flex items-center justify-between border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] px-4 py-3 md:hidden">
-        <span className="serif text-xl tracking-[.2em]">LOZIA</span>
+        <Link href="/" className="flex items-center gap-1" data-testid="link-logo">
+          <LoziaImage src="/images/logo-nav.jpeg" alt="Logo" width={36} height={36} className="h-5 w-5 rounded-full object-cover object-center" />
+          <span className="serif text-xl tracking-[.2em]">OZIA</span>
+        </Link>
         <button onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="admin-menu" aria-label={open ? 'Close menu' : 'Open menu'} className="flex h-11 w-11 items-center justify-center">
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
       <aside id="admin-menu" className={`${open ? 'block' : 'hidden'} border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] p-4 md:block md:w-60 md:shrink-0 md:border-b-0 md:border-r`}>
         <Link href="/" className="flex items-center gap-1" data-testid="link-logo">
-          <LoziaImage src="/images/logo-nav.jpeg" alt="Logo" width={44} height={36} className="h-7 w-7 mb-6 rounded-full object-cover object-center" />
+          <LoziaImage src="/images/logo-nav.jpeg" alt="Logo" width={44} height={36} className="h-7 w-7 mb-6 hidden md:block rounded-full object-cover object-center" />
           <span className="serif mb-6 hidden text-2xl tracking-[.2em] md:block">OZIA</span>
         </Link>
         {links}

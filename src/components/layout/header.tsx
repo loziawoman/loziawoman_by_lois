@@ -13,16 +13,16 @@ const links = [
   { href: '/contact', label: 'Contact' },
 ];
 
-function Logo({ onClick }: { onClick?: () => void }) {
+function Logo({ logo, onClick }: { logo: string; onClick?: () => void }) {
   return (
     <Link href="/" onClick={onClick} className="flex items-center gap-1" data-testid="link-logo">
-      <LoziaImage src="/images/logo-nav.jpeg" alt="Logo" width={44} height={36} className="h-7 w-7 rounded-full object-cover object-center" />
+      <LoziaImage src={logo} alt="Logo" width={44} height={36} className="h-7 w-7 rounded-full object-cover object-center" />
       <span className="serif text-[25px] tracking-[.24em]">OZIA</span>
     </Link>
   );
 }
 
-export function Header({ brandName }: { brandName: string }) {
+export function Header({ brandName, logo }: { brandName: string; logo: string }) {
   const cart = useCart();
   const pathname = usePathname();
   const [menu, setMenu] = useState(false);
@@ -40,7 +40,7 @@ export function Header({ brandName }: { brandName: string }) {
         {/* LEFT — LOGO */}
         <div className="flex items-center">
           <span className="sr-only">{brandName}</span>
-          <Logo />
+          <Logo logo={logo} />
         </div>
 
         {/* CENTER — DESKTOP NAVIGATION */}

@@ -15,7 +15,7 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
   const rows = await loadInventory(supabase, active);
   const tab = (key: 'all' | 'low' | 'out', label: string) => (
     <Link href={key === 'all' ? '/admin/inventory' : `/admin/inventory?filter=${key}`} aria-current={active === key ? 'page' : undefined}
-      className={`inline-flex min-h-10 items-center border px-4 text-xs uppercase tracking-[.12em] ${active === key ? 'border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'border-[hsl(var(--border))]'}`}>{label}</Link>
+      className={`inline-flex min-h-10 items-center border px-4 text-xs uppercase tracking-[.12em] ${active === key ? 'border-[hsl(var(--primary))] bg-[hsl(var(--muted-foreground))] text-[hsl(var(--primary-foreground))]' : 'border-[hsl(var(--border))]'}`}>{label}</Link>
   );
 
   return (

@@ -16,7 +16,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             className="flex items-center gap-1"
             data-testid="link-logo"
           >
-          <LoziaImage src="/images/logo-nav.jpeg" alt={`${settings.brandName} logo`} width={36} height={36} className="h-7 w-7 rounded-full object-cover object-center" data-testid="img-brand-logo" />
+          <LoziaImage src={settings.siteImages.logo.src} alt={settings.siteImages.logo.alt} width={36} height={36} className="h-7 w-7 rounded-full object-cover object-center" data-testid="img-brand-logo" />
             <span className="serif text-[25px] text-[hsl(var(--primary-foreground))]/65 tracking-[.24em]">OZIA</span>
           </Link>
           <p className="mt-4 max-w-[260px] text-sm leading-6 text-[hsl(var(--primary-foreground))]/65">

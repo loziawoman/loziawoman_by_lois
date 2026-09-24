@@ -21,7 +21,7 @@ export default async function ContactPage() {
 
       <section className="grid md:grid-cols-2">
         <div className="relative h-[600px] w-full">
-          <LoziaImage src="/images/lozia-blazer.jpg" alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+          <LoziaImage src={settings.siteImages.contact_hero.src} alt={settings.siteImages.contact_hero.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
         </div>
         <div className="flex items-center bg-[hsl(var(--accent))] p-10 md:p-20">
           <div>

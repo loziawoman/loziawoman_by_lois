@@ -17,7 +17,7 @@ export function StoreShell({
   return (
     <CartProvider>
       <div className="grain min-h-[100dvh]">
-        <Header brandName={settings.brandName} />
+        <Header brandName={settings.brandName} logo={settings.siteImages.logo.src} />
 
         <div id="main" tabIndex={-1} className="outline-none">
           {children}

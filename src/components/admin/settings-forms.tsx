@@ -3,8 +3,9 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiRequest, jsonBody } from '@/lib/api/client';
-import type { PolicyContent, ShippingRates, SizeGuideContent, HomepageContent } from '@/types';
+import type { PolicyContent, ShippingRates, SizeGuideContent, HomepageContent, SiteImages } from '@/types';
 import { btnCls, btnGhostCls, inputCls, Panel } from './ui';
+import { SiteImageManager } from './site-image-manager';
 
 function useSave() {
   const router = useRouter();
@@ -178,4 +179,42 @@ export function SizeGuideEditor({ guide }: { guide: SizeGuideContent }) {
       </form>
     </Panel>
   );
+}
+
+
+export function ReviewSettingsGroup({ enabled }: { enabled: boolean }) {
+  const { busy, message, save } = useSave();
+  const [value, setValue] = useState(enabled);
+
+  return (
+    <Panel title="Customer reviews">
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          void save({ review_submission_enabled: value });
+        }}
+        className="grid gap-4"
+      >
+        <label className="flex items-start gap-3 text-sm">
+          <input
+            type="checkbox"
+            checked={value}
+            onChange={(event) => setValue(event.target.checked)}
+            className="mt-0.5 h-5 w-5"
+          />
+          <span>
+            <span className="block">Allow customers to leave reviews</span>
+            <span className="mt-1 block text-xs text-[hsl(var(--muted-foreground))]">
+              When disabled, the &ldquo;Leave a review&rdquo; button and review form are hidden from customers. Existing reviews remain visible.
+            </span>
+          </span>
+        </label>
+        <Footer busy={busy} message={message} />
+      </form>
+    </Panel>
+  );
+}
+
+export function SiteImagesGroup({ images }: { images: SiteImages }) {
+  return <SiteImageManager images={images} />;
 }

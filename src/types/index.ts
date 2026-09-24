@@ -5,6 +5,17 @@ export type ProductStatus = 'draft' | 'published' | 'archived';
 export type PaymentStatus = 'PENDING' | 'SUBMITTED' | 'VERIFIED' | 'REJECTED' | 'REFUNDED';
 export type FulfillmentStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
 
+export type ReviewStatus = 'visible' | 'hidden' | 'spotlight';
+export type Review = {
+  id: string;
+  name: string;
+  email: string | null;
+  rating: number;
+  message: string;
+  status: ReviewStatus;
+  createdAt: string;
+};
+
 export type Category = { id: string; name: string; slug: string; description: string; imageUrl: string | null; sortOrder: number };
 export type ProductColour = { id: string; name: string; slug: string; hex: string; sortOrder: number };
 export type ProductSize = { id: string; name: string; sortOrder: number };

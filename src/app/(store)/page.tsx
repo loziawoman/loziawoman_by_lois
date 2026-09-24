@@ -1,4 +1,4 @@
-import { CategoryTiles, FeaturedCollection, FeaturedPieces, Hero, LoziaWoman } from '@/components/home/sections';
+import { CategoryTiles, FeaturedCollection, Hero, LoziaWoman } from '@/components/home/sections';
 import { ReviewsSection } from '@/components/home/reviews';
 import { listCategories, listPublishedProducts } from '@/lib/products/queries';
 import { getSiteSettings } from '@/lib/settings/queries';
@@ -19,7 +19,6 @@ export default async function HomePage() {
       <FeaturedCollection products={featured.length ? featured : products.slice(0, 4)} />
       <CategoryTiles categories={categories} products={products} siteImages={settings.siteImages} />
       <LoziaWoman image={getSiteImage(settings.siteImages, 'home_editorial')} />
-      <FeaturedPieces products={products} instagramUrl={settings.instagramUrl} />
       <ReviewsSection reviewSubmissionEnabled={settings.reviewSubmissionEnabled} />
     </div>
   );

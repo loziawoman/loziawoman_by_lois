@@ -5,6 +5,7 @@ import { OrderActions } from '@/components/admin/order-actions';
 import { Pill, PageHeader, Panel, cellCls, fulfillmentTone, paymentTone, Table } from '@/components/admin/ui';
 import { can } from '@/lib/auth/permissions';
 import { requirePermission } from '@/lib/auth/session';
+import { DeleteRecordButton } from '@/components/admin/delete-record-button';
 import { formatDateTime, naira } from '@/lib/format';
 import { getOrder } from '@/lib/orders/admin-queries';
 import { availableActions } from '@/lib/orders/status';
@@ -25,6 +26,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   return (
     <>
       <PageHeader title={order.orderNumber} description={`Placed ${formatDateTime(order.createdAt)}`} actions={<Link href="/admin/orders" className="underline-link mono">All orders</Link>} />
+      <div className="mb-6"><DeleteRecordButton endpoint={`/api/admin/orders/${id}`} redirectTo="/admin/orders" confirmText="Delete this order permanently? This cannot be undone." /></div>
       <div className="mb-8 flex flex-wrap gap-2">
         <Pill tone={paymentTone(order.paymentStatus)}>Payment: {order.paymentStatus}</Pill>
         <Pill tone={fulfillmentTone(order.fulfillmentStatus)}>Fulfilment: {order.fulfillmentStatus}</Pill>

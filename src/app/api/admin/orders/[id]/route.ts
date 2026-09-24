@@ -49,3 +49,17 @@ export const POST = adminRoute<{ id: string }>('orders:write', async ({ request,
   }
   return ok({ id, action: input.action });
 });
+
+export const DELETE = adminRoute<{ id: string }>('orders:delete', async ({ supabase, params }) => {
+  const id = uuid.parse(params.id);
+  const result = unwrap(
+    await supabase.rpc('delete_order_for_admin', { p_order_id: id })
+  ) as { order_number?: string; receipt_paths?: string[] } | null;
+
+  const paths = result?.receipt_paths ?? [];
+  if (paths.length) {
+    await supabase.storage.from('receipts').remove(paths);
+  }
+
+  return ok({ id, deleted: true, orderNumber: result?.order_number ?? null });
+});

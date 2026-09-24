@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Empty, Pill, PageHeader, Panel, cellCls, fulfillmentTone, paymentTone, Table } from '@/components/admin/ui';
 import { loadCustomer } from '@/lib/admin/queries';
 import { requirePermission } from '@/lib/auth/session';
+import { DeleteRecordButton } from '@/components/admin/delete-record-button';
 import { formatDateTime, naira } from '@/lib/format';
 import { listOrders } from '@/lib/orders/admin-queries';
 import { uuid } from '@/lib/validation/common';
@@ -21,6 +22,7 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
   return (
     <>
       <PageHeader title={customer.fullName} actions={<Link href="/admin/customers" className="underline-link mono">All customers</Link>} />
+      <div className="mb-6"><DeleteRecordButton endpoint={`/api/admin/customers/${id}`} redirectTo="/admin/customers" confirmText="Delete this customer and all of their orders? This cannot be undone." /></div>
       <Panel title="Contact"><p className="text-sm">{customer.email}<br />{customer.phone}</p></Panel>
       <Panel title="Order history">
         {orders.length === 0 ? <Empty>No orders.</Empty> : (

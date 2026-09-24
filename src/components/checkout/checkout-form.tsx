@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { LoziaImage } from '@/components/lozia-image';
@@ -22,9 +22,22 @@ export function CheckoutForm({ rates }: { rates: ShippingRates }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+  const [rememberDetails, setRememberDetails] = useState(true);
+  const [savedDetails, setSavedDetails] = useState<{ fullName: string; email: string; phone: string; address: string; city: string; state: string } | null>(null);
 
   const shippingFee = useMemo(() => (state ? calculateShippingFee(rates, state, cart.subtotal) : 0), [rates, state, cart.subtotal]);
   const total = cart.subtotal + shippingFee;
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('lozia-customer-details');
+      if (raw) setSavedDetails(JSON.parse(raw));
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    if (savedDetails?.state) setState(savedDetails.state);
+  }, [savedDetails]);
 
   if (!cart.hydrated) return <div className="mt-12 min-h-[40vh]" aria-busy="true" />;
 
@@ -41,6 +54,18 @@ export function CheckoutForm({ rates }: { rates: ShippingRates }) {
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    if (rememberDetails) {
+      try {
+        localStorage.setItem('lozia-customer-details', JSON.stringify({
+          fullName: String(data.get('fullName') ?? ''),
+          email: String(data.get('email') ?? ''),
+          phone: String(data.get('phone') ?? ''),
+          address: String(data.get('address') ?? ''),
+          city: String(data.get('city') ?? ''),
+          state: String(data.get('state') ?? ''),
+        }));
+      } catch {}
+    }
     const text = (name: string) => String(data.get(name) ?? '');
     setBusy(true); setError(''); setFieldErrors({});
 
@@ -66,22 +91,23 @@ export function CheckoutForm({ rates }: { rates: ShippingRates }) {
   };
 
   return (
-    <form onSubmit={submit} className="mt-12 grid gap-12 md:grid-cols-[1.2fr_.8fr]" noValidate>
+    <form key={savedDetails ? "saved-details" : "new-details"} onSubmit={submit} className="mt-12 grid gap-12 md:grid-cols-[1.2fr_.8fr]" noValidate>
       <div className="grid gap-10">
         <fieldset className="grid gap-5">
           <legend className="serif text-3xl">Contact</legend>
-          <TextField id="fullName" name="fullName" label="Full name" required autoComplete="name" error={firstError(fieldErrors, 'customer.fullName')} />
+          <TextField id="fullName" name="fullName" label="Full name" required autoComplete="name" defaultValue={savedDetails?.fullName ?? ""} error={firstError(fieldErrors, 'customer.fullName')} />
           <div className="grid gap-5 sm:grid-cols-2">
-            <TextField id="email" name="email" type="email" label="Email" required autoComplete="email" error={firstError(fieldErrors, 'customer.email')} />
-            <TextField id="phone" name="phone" type="tel" label="Phone number" required autoComplete="tel" error={firstError(fieldErrors, 'customer.phone')} />
+            <TextField id="email" name="email" type="email" label="Email" required autoComplete="email" defaultValue={savedDetails?.email ?? ""} error={firstError(fieldErrors, 'customer.email')} />
+            <TextField id="phone" name="phone" type="tel" label="Phone number" required autoComplete="tel" defaultValue={savedDetails?.phone ?? ""} error={firstError(fieldErrors, 'customer.phone')} />
           </div>
         </fieldset>
 
         <fieldset className="grid gap-5">
           <legend className="serif text-3xl">Delivery</legend>
-          <TextField id="address" name="address" label="Delivery address" required autoComplete="street-address" error={firstError(fieldErrors, 'delivery.address')} />
+          <label className="flex items-start gap-3 text-sm"><input type="checkbox" checked={rememberDetails} onChange={(e) => { const checked = e.target.checked; setRememberDetails(checked); if (!checked) { try { localStorage.removeItem("lozia-customer-details"); } catch {} setSavedDetails(null); } }} className="mt-1 h-5 w-5" /><span>Save my details on this device for faster checkout next time.</span></label>
+          <TextField id="address" name="address" label="Delivery address" required autoComplete="street-address" defaultValue={savedDetails?.address ?? ""} error={firstError(fieldErrors, 'delivery.address')} />
           <div className="grid gap-5 sm:grid-cols-2">
-            <TextField id="city" name="city" label="City" required autoComplete="address-level2" error={firstError(fieldErrors, 'delivery.city')} />
+            <TextField id="city" name="city" label="City" required autoComplete="address-level2" defaultValue={savedDetails?.city ?? ""} error={firstError(fieldErrors, 'delivery.city')} />
             <div className="grid gap-2 text-xs">
               <label htmlFor="state" className="mono">State</label>
               <select id="state" name="state" required value={state} onChange={(event) => setState(event.target.value)} autoComplete="address-level1"

@@ -13,6 +13,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     ...(can(user.role, 'catalog:write') ? [{ href: '/admin/attributes', label: 'Colours, sizes & categories' }] : []),
     { href: '/admin/customers', label: 'Customers' },
     { href: '/admin/messages', label: 'Messages' },
+    ...(can(user.role, 'settings:write') ? [{ href: '/admin/reviews', label: 'Reviews' }] : []),
     ...(can(user.role, 'settings:write') ? [{ href: '/admin/content', label: 'Content & settings' }] : []),
     ...(can(user.role, 'audit:read') ? [{ href: '/admin/audit', label: 'Audit log' }] : []),
   ];

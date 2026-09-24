@@ -17,7 +17,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
 
   return (
     <>
-      <PageHeader title="Products" description="Create, edit, publish and archive pieces." actions={can(user.role, 'catalog:write') ? <Link className={btnCls} href="/admin/products/new">New product</Link> : undefined} />
+      <PageHeader title="Products" description="Create, edit, publish and archive pieces." actions={can(user.role, 'catalog:write') ? <Link className="inline-flex min-h-10 items-center justify-center gap-2 bg-[hsl(var(--muted))] px-4 text-xs uppercase tracking-[.12em] text-[hsl(var(--primary-foreground))] disabled:opacity-40" href="/admin/products/new">New product</Link> : undefined} />
       <form className="mb-6 grid gap-3 sm:grid-cols-[2fr_1fr_auto_auto]" role="search">
         <input name="q" defaultValue={q} placeholder="Search by name or slug" aria-label="Search products" className={inputCls} />
         <select name="status" defaultValue={status ?? ''} aria-label="Status" className={inputCls}>

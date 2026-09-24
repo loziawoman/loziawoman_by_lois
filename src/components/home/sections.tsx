@@ -2,14 +2,15 @@ import Link from 'next/link';
 import { ArrowRight, Instagram } from 'lucide-react';
 import { LoziaImage } from '@/components/lozia-image';
 import { ProductCard } from '@/components/shop/product-card';
-import type { Category, HomepageContent, Product } from '@/types';
+import type { Category, HomepageContent, Product, SiteImage, SiteImages } from '@/types';
+import { getSiteImage } from '@/lib/content/site-images';
 
-export function Hero({ homepage, tagline }: { homepage: HomepageContent; tagline: string }) {
+export function Hero({ homepage, tagline, image }: { homepage: HomepageContent; tagline: string; image: SiteImage }) {
   return (
     <section className="relative min-h-[calc(100dvh-74px)] overflow-hidden bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_42%,hsl(var(--accent))/18%,transparent_42%)]" />
       <div className="absolute right-[-18%] top-[8%] h-[86vw] max-h-[680px] w-[86vw] max-w-[680px] overflow-hidden rounded-full border border-[hsl(var(--secondary))]/35 shadow-2xl md:right-[5%] md:top-[9%]">
-        <LoziaImage src="/images/lozia-logo.jpeg" alt="" fill sizes="(min-width: 768px) 680px, 86vw" loading="eager" className="object-cover" />
+        <LoziaImage src={image.src} alt={image.alt} fill sizes="(min-width: 768px) 680px, 86vw" loading="eager" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--primary))]/80 via-transparent to-transparent md:from-[hsl(var(--primary))]/35" />
       </div>
       <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--primary))] via-[hsl(var(--primary))]/70 to-transparent" />
@@ -57,14 +58,39 @@ const tileStyles = [
   { box: 'bg-[hsl(var(--muted))]', dim: '', label: 'text-[hsl(var(--secondary))]', overlay: 'bg-gradient-to-t from-black/55 to-transparent text-white' },
 ];
 
-export function CategoryTiles({ categories, products }: { categories: Category[]; products: Product[] }) {
-  const tiles = categories
-    .map((category) => {
+export function CategoryTiles({ categories, products, siteImages }: { categories: Category[]; products: Product[]; siteImages: SiteImages }) {
+  // The homepage has three fixed editorial slots. Do not depend on the order of
+  // categories returned by the database; resolve each category independently so
+  // the matching CMS image always stays attached to the intended tile.
+  const categoryMatches = [
+    { slot: getSiteImage(siteImages, 'home_tailoring'), names: ['tailoring'], fallback: '/images/lozia-blazer.jpg' },
+    { slot: getSiteImage(siteImages, 'home_everyday'), names: ['sets', 'everyday'], fallback: '/images/atelier-set.jpg' },
+    { slot: getSiteImage(siteImages, 'home_evening'), names: ['dresses', 'evening'], fallback: '/images/muse-dress.jpg' },
+  ];
+
+  const tiles = categoryMatches
+    .map(({ slot, names, fallback }) => {
+      const category = categories.find((item) => {
+        const slug = item.slug.trim().toLowerCase();
+        const name = item.name.trim().toLowerCase();
+        return names.includes(slug) || names.includes(name);
+      });
+
+      if (!category) return null;
+
       const inCategory = products.filter((p) => p.category?.id === category.id);
-      return { category, image: category.imageUrl ?? inCategory[0]?.images[0]?.src ?? null, count: inCategory.length };
+      const image = slot?.src
+        ? slot
+        : category.imageUrl
+          ? { src: category.imageUrl, alt: category.name }
+          : inCategory[0]?.images[0]
+            ? { src: inCategory[0].images[0].src, alt: inCategory[0].images[0].alt }
+            : { src: fallback, alt: category.name };
+
+      return { category, image };
     })
-    .filter((tile) => tile.count > 0)
-    .slice(0, 3);
+    .filter((tile): tile is { category: Category; image: SiteImage } => Boolean(tile));
+
   if (tiles.length === 0) return null;
 
   return (
@@ -73,7 +99,7 @@ export function CategoryTiles({ categories, products }: { categories: Category[]
         const style = tileStyles[index % tileStyles.length];
         return (
           <Link key={category.id} href={`/shop?category=${category.slug}`} className={`group relative min-h-[360px] overflow-hidden ${style.box}`}>
-            <LoziaImage src={image} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className={`image-hover object-cover ${style.dim}`} />
+            <LoziaImage src={image.src} alt={image.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className={`image-hover object-cover ${style.dim}`} />
             <div className={`relative flex h-full min-h-[360px] flex-col justify-end p-7 ${style.overlay}`}>
               <span className={`mono ${style.label}`}>Shop by category</span>
               <h3 className="serif mt-2 text-4xl">{category.name}</h3>
@@ -85,7 +111,7 @@ export function CategoryTiles({ categories, products }: { categories: Category[]
   );
 }
 
-export function LoziaWoman({ image }: { image: string | null }) {
+export function LoziaWoman({ image }: { image: SiteImage }) {
   return (
     <section className="grid min-h-[650px] md:grid-cols-2">
       <div className="flex items-center bg-[hsl(var(--accent))] px-8 py-20 text-[hsl(var(--primary))] md:px-20">
@@ -96,7 +122,7 @@ export function LoziaWoman({ image }: { image: string | null }) {
         </div>
       </div>
       <div className="relative min-h-[500px] overflow-hidden bg-[hsl(var(--muted))]">
-        <LoziaImage src={image} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="image-hover object-cover" />
+        <LoziaImage src={image.src} alt={image.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="image-hover object-cover" />
       </div>
     </section>
   );

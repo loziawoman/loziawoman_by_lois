@@ -20,6 +20,7 @@ export function supabaseServiceRoleKey(): string {
 }
 
 export const PRODUCT_IMAGE_BUCKET = 'product-images';
+export const SITE_IMAGE_BUCKET = 'site-images';
 export const RECEIPT_BUCKET = 'payment-receipts';
 
 /** Public URL prefix of the product image bucket, ending in a slash. */

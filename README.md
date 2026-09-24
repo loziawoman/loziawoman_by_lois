@@ -171,11 +171,14 @@ automatically; the window is set in **Content & settings → Delivery fees and s
 
 ## Known limitations
 
-- No automated email/SMS/WhatsApp notifications yet — `lib/notifications` defines the event boundary and logs
-  events to the server console; plug in a real provider by implementing one `NotificationProvider`.
+- Automated email notifications use Resend through the `NotificationProvider` boundary. SMS and WhatsApp are not implemented yet. Set `RESEND_API_KEY` and `RESEND_FROM_EMAIL` to enable email delivery; the server log remains a fallback when Resend is unavailable.
 - No customer accounts/order history beyond the guest order-link + "track an order" lookup (by design, per the
   brief: guest checkout, no forced signup).
 - `next/image` is configured for files in `/public` and this project's own Supabase Storage bucket; a hosted
   image URL typed into an image field is shown unoptimized rather than failing.
 - The in-memory rate limiter is per server instance — fine for a single Vercel deployment, but add a shared
   limiter (e.g. Upstash Redis) if you scale to multiple regions/instances.
+
+### Website content images
+
+Storefront content images can be replaced from **Admin → Content & settings → Website images**. This includes the brand logo, homepage hero/editorial/category imagery, About imagery, and Contact imagery. Uploaded files are validated and stored in the Supabase `site-images` bucket; each slot keeps an editable alt text and can be reset to its built-in fallback image. Product imagery remains managed separately from each product's image manager.

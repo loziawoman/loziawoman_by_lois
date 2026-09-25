@@ -195,4 +195,3 @@ export type CustomerOrderView = {
   hasReceipt: boolean;
   items: { productName: string; colourName: string; sizeName: string; quantity: number; lineTotal: number }[];
 };
-

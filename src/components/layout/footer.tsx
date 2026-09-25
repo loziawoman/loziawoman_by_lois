@@ -27,6 +27,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
         <nav aria-label="Discover">
           <span className="mono text-[hsl(var(--secondary))]">Discover</span>
           <div className="mt-4 flex flex-col text-sm text-[hsl(var(--primary-foreground))]/75">
+            <Link className={link} href="/wishlist" data-testid="footer-link-favorites">Favorites</Link>
             <Link className={link} href="/shop" data-testid="footer-link-shop">Shop all</Link>
             <Link className={link} href="/about" data-testid="footer-link-about">Our story</Link>
             <Link className={link} href="/contact" data-testid="footer-link-contact">Contact</Link>

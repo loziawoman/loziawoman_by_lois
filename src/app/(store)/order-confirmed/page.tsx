@@ -53,7 +53,7 @@ export default async function OrderConfirmedPage({ searchParams }: { searchParam
       </section>
 
       <p className="mt-10 text-sm text-[hsl(var(--muted-foreground))]">
-        Keep this page&apos;s link: it is how you come back to your order. You can also <Link href="/track-order" className="underline-link">track an order</Link> with your order number and email.
+        Keep this page&apos;s link: it is how you come back to your order. You can also <Link href="/track-order" className="underline-link text-bold">track your order</Link> with your order number and email, by clicking the <Link href="/track-order" className="underline-link">track an order</Link> link in the footer.
       </p>
     </main>
   );

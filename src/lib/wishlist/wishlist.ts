@@ -1,0 +1,94 @@
+export const WISHLIST_STORAGE_KEY = 'lozia-wishlist';
+export const WISHLIST_UPDATED_EVENT = 'lozia:wishlist-updated';
+
+export type WishlistItem = {
+  productId: string;
+  slug: string;
+  addedAt: number;
+};
+
+function isWishlistItem(value: unknown): value is WishlistItem {
+  if (!value || typeof value !== 'object') return false;
+  const item = value as Record<string, unknown>;
+
+  return (
+    typeof item.productId === 'string' &&
+    typeof item.slug === 'string' &&
+    typeof item.addedAt === 'number' &&
+    Number.isFinite(item.addedAt)
+  );
+}
+
+export function readWishlist(): WishlistItem[] {
+  if (typeof window === 'undefined') return [];
+
+  try {
+    const raw = window.localStorage.getItem(WISHLIST_STORAGE_KEY);
+    if (!raw) return [];
+
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed.filter(isWishlistItem);
+  } catch {
+    return [];
+  }
+}
+
+export function writeWishlist(items: WishlistItem[]): WishlistItem[] {
+  const unique = Array.from(
+    new Map(items.map((item) => [item.productId, item])).values(),
+  );
+
+  if (typeof window === 'undefined') return unique;
+
+  try {
+    window.localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(unique));
+    window.dispatchEvent(new Event(WISHLIST_UPDATED_EVENT));
+  } catch {
+    // Keep the UI usable if browser storage is unavailable.
+  }
+
+  return unique;
+}
+
+export function addToWishlist(product: Pick<WishlistItem, 'productId' | 'slug'>): WishlistItem[] {
+  const current = readWishlist();
+  if (current.some((item) => item.productId === product.productId)) return current;
+  return writeWishlist([
+    { productId: product.productId, slug: product.slug, addedAt: Date.now() },
+    ...current,
+  ]);
+}
+
+export function toggleWishlist(
+  product: Pick<WishlistItem, 'productId' | 'slug'>,
+): WishlistItem[] {
+  const current = readWishlist();
+  const exists = current.some((item) => item.productId === product.productId);
+
+  if (exists) {
+    return writeWishlist(
+      current.filter((item) => item.productId !== product.productId),
+    );
+  }
+
+  return writeWishlist([
+    {
+      productId: product.productId,
+      slug: product.slug,
+      addedAt: Date.now(),
+    },
+    ...current,
+  ]);
+}
+
+export function removeFromWishlist(productId: string): WishlistItem[] {
+  return writeWishlist(
+    readWishlist().filter((item) => item.productId !== productId),
+  );
+}
+
+export function clearWishlist(): WishlistItem[] {
+  return writeWishlist([]);
+}

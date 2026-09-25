@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 import { LoziaImage } from '@/components/lozia-image';
 import { apiRequest, jsonBody } from '@/lib/api/client';
 import type { SiteImageKey, SiteImages } from '@/types';
-import { SITE_IMAGE_KEYS, SITE_IMAGE_META, getSiteImage } from '@/lib/content/site-images';
+import { SITE_IMAGE_KEYS, SITE_IMAGE_META } from '@/lib/content/site-images';
 import { btnCls, btnGhostCls, inputCls, Panel } from './ui';
 
-export function SiteImageManager({ images }: { images?: SiteImages }) {
+export function SiteImageManager({ images }: { images: SiteImages }) {
   const router = useRouter();
   const [busyKey, setBusyKey] = useState<string | null>(null);
   const [message, setMessage] = useState('');
@@ -53,10 +53,7 @@ export function SiteImageManager({ images }: { images?: SiteImages }) {
       </p>
       <div className="grid gap-5 md:grid-cols-2">
         {SITE_IMAGE_KEYS.map((key) => {
-          // Site-image settings may come from an older/partial database record.
-          // Always resolve through the built-in fallback so the CMS never crashes
-          // when one image slot is missing.
-          const image = getSiteImage(images ?? {}, key);
+          const image = images[key];
           const meta = SITE_IMAGE_META[key];
           const busy = busyKey === key;
           return (

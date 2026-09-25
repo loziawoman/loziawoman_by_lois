@@ -1,9 +1,10 @@
 import type { Category, Product, ProductColour, ProductImage, ProductSize, ProductStatus, ProductVariant } from '@/types';
 import { availableQuantity } from '@/lib/inventory/stock';
+import { discountedPrice } from '@/lib/products/variants';
 
 /** Embedded select used by every product query. Keep in step with ProductRow. */
 export const PRODUCT_SELECT = `
-  id, name, slug, description, short_description, fabric, care, base_price, status, featured, original_colour_id, created_at, updated_at,
+  id, name, slug, description, short_description, fabric, care, base_price, discount_enabled, discount_type, discount_value, status, featured, original_colour_id, created_at, updated_at,
   category:categories ( id, name, slug, description, image_url, sort_order ),
   images:product_images ( id, storage_path, public_url, alt_text, sort_order, is_primary, mask_storage_path, mask_public_url ),
   colours:product_colours ( sort_order, colour:colours ( id, name, slug, hex, sort_order ) ),
@@ -13,7 +14,7 @@ export const PRODUCT_SELECT = `
 
 export type ProductRow = {
   id: string; name: string; slug: string; description: string; short_description: string; fabric: string; care: string;
-  base_price: number | string; status: ProductStatus; featured: boolean; original_colour_id: string | null; created_at: string; updated_at: string;
+  base_price: number | string; discount_enabled: boolean; discount_type: 'fixed' | 'percentage'; discount_value: number | string; status: ProductStatus; featured: boolean; original_colour_id: string | null; created_at: string; updated_at: string;
   category: { id: string; name: string; slug: string; description: string; image_url: string | null; sort_order: number } | null;
   images: { id: string; storage_path: string | null; public_url: string | null; alt_text: string; sort_order: number; is_primary: boolean; mask_storage_path: string | null; mask_public_url: string | null }[] | null;
   colours: { sort_order: number; colour: { id: string; name: string; slug: string; hex: string; sort_order: number } | null }[] | null;
@@ -69,7 +70,7 @@ export function mapProduct(row: ProductRow, imageBaseUrl: string): Product {
   return {
     id: row.id, name: row.name, slug: row.slug, description: row.description, shortDescription: row.short_description,
     fabric: row.fabric, care: row.care, category: row.category ? mapCategory(row.category) : null,
-    basePrice, status: row.status, featured: row.featured, originalColourId: row.original_colour_id,
+    basePrice, discount: { enabled: Boolean(row.discount_enabled), type: row.discount_type, value: Number(row.discount_value) }, status: row.status, featured: row.featured, originalColourId: row.original_colour_id,
     createdAt: row.created_at, updatedAt: row.updated_at, images, colours, sizes, variants,
   };
 }
@@ -85,7 +86,10 @@ export type ProductFilters = {
 };
 
 const inStock = (product: Product) => product.variants.some((v) => v.isActive && v.available > 0);
-const lowestPrice = (product: Product) => Math.min(product.basePrice, ...product.variants.filter((v) => v.isActive).map((v) => v.price));
+const lowestPrice = (product: Product) => Math.min(
+  product.basePrice,
+  ...product.variants.filter((v) => v.isActive).map((v) => discountedPrice(v.price, product.discount)),
+);
 
 /** Shop filtering and sorting. Runs on the server from the URL's query string so every view is shareable. */
 export function filterProducts(products: Product[], f: ProductFilters): Product[] {

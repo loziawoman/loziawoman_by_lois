@@ -29,7 +29,31 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
   return (
     <>
-      <PageHeader title={product.name} description={`Status: ${product.status}`} actions={<>{product.status === 'published' && <Link className="underline-link mono" href={`/shop/${product.slug}`} target="_blank">View on shop</Link>}</>} />
+      <PageHeader
+        title={product.name}
+        description={`Status: ${product.status}`}
+        actions={
+          <>
+            {product.status === 'published'}
+          </>
+        }
+      />
+      <div className="mb-8 flex items-center justify-between md:mb-10">
+        <Link className="mono inline-flex items-center border border-[hsl(var(--border))] px-5 py-3 text-sm transition-colors hover:bg-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary-foreground))] md:px-6 md:py-3.5" href="/admin/products">
+          &larr; Back to products
+        </Link>
+        {product.status === 'published' && (
+          <Link className="underline-link mono" href={`/shop/${product.slug}`} target="_blank">
+            View on shop
+          </Link>
+        )}
+      </div>
+      {/*<div className="gap-10">
+        <Link className="mono mb-8 mr-5 inline-flex items-center border border-[hsl(var(--border))] px-5 py-3 text-sm transition-colors hover:bg-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary-foreground))] md:mb-10 md:px-6 md:py-3.5" href="/admin/products">&larr; Back to products</Link>
+        <Link className="underline-link mono" href={`/shop/${product.slug}`} target="_blank">
+          View on shop
+        </Link>
+      </div>*/}
       {!canWrite && <p role="note" className="mb-6 border border-[hsl(var(--border))] p-3 text-sm">You can view this product. Editing needs an admin account.</p>}
       <Panel title="Details"><ProductForm product={product} categories={categories.data ?? []} colours={colours.data ?? []} sizes={sizes.data ?? []} readOnly={!canWrite} /></Panel>
       <Panel title="Images"><ImageManager productId={product.id} images={product.images} readOnly={!canWrite} /></Panel>

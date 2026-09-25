@@ -19,6 +19,9 @@ export const PATCH = adminRoute<Params>('catalog:write', async ({ request, user,
   if (input.care !== undefined) update.care = input.care;
   if (input.categoryId !== undefined) update.category_id = input.categoryId;
   if (input.basePrice !== undefined) update.base_price = input.basePrice;
+  if (input.discountEnabled !== undefined) update.discount_enabled = input.discountEnabled;
+  if (input.discountType !== undefined) update.discount_type = input.discountType;
+  if (input.discountValue !== undefined) update.discount_value = input.discountValue;
   if (input.status !== undefined) update.status = input.status;
   if (input.featured !== undefined) update.featured = input.featured;
   if (input.originalColourId !== undefined) update.original_colour_id = input.originalColourId;

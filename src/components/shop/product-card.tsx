@@ -10,7 +10,7 @@ import type { Product } from '@/types';
 
 export function ProductCard({ product, sizes }: { product: Product; sizes?: string }) {
   const [quickAdd, setQuickAdd] = useState(false);
-  const { price, from } = displayPrice(product.basePrice, product.variants);
+  const { price, originalPrice, discountPercent, discounted, from } = displayPrice(product.basePrice, product.variants, product.discount);
   const soldOut = !hasStock(product.variants);
   const image = product.images[0];
   const href = `/shop/${product.slug}`;
@@ -46,7 +46,16 @@ export function ProductCard({ product, sizes }: { product: Product; sizes?: stri
           <span className="serif block text-[19px]">{product.name}</span>
           <span className="mt-1 block text-xs text-[hsl(var(--muted-foreground))]">{product.category?.name}</span>
         </span>
-        <span className="text-sm">{from ? 'From ' : ''}{naira(price)}</span>
+        <span className="text-sm text-right">
+          {discounted ? (
+            <span className="flex flex-col items-end">
+              <span className="text-xs text-[hsl(var(--muted-foreground))] line-through">{from ? 'From ' : ''}{naira(originalPrice)}</span>
+              <span>{from ? 'From ' : ''}{naira(price)} <span className="ml-1 text-[10px]">-{discountPercent}%</span></span>
+            </span>
+          ) : (
+            <span>{from ? 'From ' : ''}{naira(price)}</span>
+          )}
+        </span>
       </Link>
       {quickAdd && <QuickAdd product={product} onClose={() => setQuickAdd(false)} />}
     </div>

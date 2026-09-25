@@ -8,7 +8,7 @@ import type { SiteImageKey, SiteImages } from '@/types';
 import { SITE_IMAGE_KEYS, SITE_IMAGE_META, getSiteImage } from '@/lib/content/site-images';
 import { btnCls, btnGhostCls, inputCls, Panel } from './ui';
 
-export function SiteImageManager({ images }: { images?: SiteImages }) {
+export function SiteImageManager({ images }: { images: SiteImages }) {
   const router = useRouter();
   const [busyKey, setBusyKey] = useState<string | null>(null);
   const [message, setMessage] = useState('');
@@ -56,7 +56,7 @@ export function SiteImageManager({ images }: { images?: SiteImages }) {
           // Site-image settings may come from an older/partial database record.
           // Always resolve through the built-in fallback so the CMS never crashes
           // when one image slot is missing.
-          const image = getSiteImage(images ?? {}, key);
+          const image = getSiteImage(images, key);
           const meta = SITE_IMAGE_META[key];
           const busy = busyKey === key;
           return (

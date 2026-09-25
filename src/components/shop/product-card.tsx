@@ -29,9 +29,6 @@ export function ProductCard({ product, sizes }: { product: Product; sizes?: stri
           />
         </div>
         {soldOut && <span className="absolute left-3 top-3 bg-[hsl(var(--card))] px-2 py-1 mono text-[9px]">Sold out</span>}
-        <div className="pointer-events-none absolute right-3 top-3 translate-y-1 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 focus-within:pointer-events-auto focus-within:translate-y-0 focus-within:opacity-100 motion-reduce:transition-none">
-          <WishlistButton productId={product.id} productName={product.name} />
-        </div>
         {!soldOut && (
           <button
             type="button"

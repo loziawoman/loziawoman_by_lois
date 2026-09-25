@@ -172,6 +172,7 @@ export type SiteSettings = {
   policies: { shipping: PolicyContent; returns: PolicyContent; privacy: PolicyContent; terms: PolicyContent };
   sizeGuide: SizeGuideContent;
   aboutStory: string;
+  reviewSubmissionEnabled: boolean;
   siteImages: SiteImages;
 };
 

@@ -58,9 +58,9 @@ export function handleError(error: unknown): NextResponse {
 }
 
 /** Throws the Supabase error (if any) so handleError can translate it. */
-export function unwrap<T>(result: { data: T; error: DbErrorLike | null }): T {
+export function unwrap<T>(result: { data: T; error: DbErrorLike | null }): NonNullable<T> {
   if (result.error) throw result.error;
-  return result.data;
+  return result.data as NonNullable<T>;
 }
 
 const MAX_JSON_BYTES = 1_000_000;

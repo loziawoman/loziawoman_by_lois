@@ -85,7 +85,7 @@ function orderHtml(event: NotificationEvent & { type: Exclude<NotificationEvent[
       break;
   }
 
-  return `<div style="font-family:Arial,sans-serif;line-height:1.7;color:#211d1b;max-width:600px;margin:auto"><h1 style="font-family:Georgia,serif;font-weight:400">LOZIA</h1>${body}<p style="margin-top:32px;font-size:13px;color:#777">This is an automated message from LOZIA.</p></div>`;
+  return `<div style="font-family:Arial,sans-serif;line-height:1.7;color:#211d1b;max-width:600px;margin:auto"><h1 style="font-family:Georgia,serif;font-weight:400">LOZIA Studio</h1>${body}<p style="margin-top:32px;font-size:13px;color:#777">NB: This is an automated message from LOZIA Studio.</p></div>`;
 }
 
 /** Default provider: keeps the existing server-side event log as a safe fallback. */

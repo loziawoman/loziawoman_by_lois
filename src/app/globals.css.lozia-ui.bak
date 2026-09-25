@@ -111,16 +111,3 @@ a { color: inherit; text-decoration: none; }
   .review-bubble { width: 100%; justify-content: center; border-radius: 999px; }
   .review-bubble-tail { right: 50%; }
 }
-
-/* LOZIA announcement: one line, continuously moves right-to-left on narrow screens. */
-.announcement-bar { overflow: hidden; white-space: nowrap; }
-.announcement-track { display: flex; width: max-content; min-width: 100%; animation: lozia-announcement 18s linear infinite; }
-.announcement-copy { flex: 0 0 auto; padding: .55rem 3rem; }
-@keyframes lozia-announcement {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .announcement-track { animation: none; width: 100%; justify-content: center; }
-  .announcement-copy + .announcement-copy { display: none; }
-}

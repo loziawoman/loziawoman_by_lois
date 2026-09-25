@@ -13,16 +13,7 @@ export default async function HomePage() {
   return (
     <div>
       {settings.homepage.announcement && (
-        <div
-          className="announcement-bar bg-[hsl(var(--accent))] text-xs text-[hsl(var(--accent-foreground))]"
-          role="status"
-          aria-label="LOZIA announcement"
-        >
-          <div className="announcement-track">
-            <span className="announcement-copy">{settings.homepage.announcement}</span>
-            <span className="announcement-copy" aria-hidden="true">{settings.homepage.announcement}</span>
-          </div>
-        </div>
+        <div className="bg-[hsl(var(--accent))] px-5 py-2 text-center text-xs text-[hsl(var(--accent-foreground))]">{settings.homepage.announcement}</div>
       )}
       <Hero homepage={settings.homepage} tagline={settings.tagline} image={getSiteImage(settings.siteImages, 'home_hero')} />
       <FeaturedCollection products={featured.length ? featured : products.slice(0, 4)} />

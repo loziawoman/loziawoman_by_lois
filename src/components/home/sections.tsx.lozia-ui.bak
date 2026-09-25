@@ -99,7 +99,7 @@ export function CategoryTiles({ categories, products, siteImages }: { categories
         const style = tileStyles[index % tileStyles.length];
         return (
           <Link key={category.id} href={`/shop?category=${category.slug}`} className={`group relative min-h-[360px] overflow-hidden ${style.box}`}>
-            <LoziaImage src={image.src} alt={image.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className={`image-hover object-cover object-center md:object-[center_22%] ${style.dim}`} />
+            <LoziaImage src={image.src} alt={image.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className={`image-hover object-cover ${style.dim}`} />
             <div className={`relative flex h-full min-h-[360px] flex-col justify-end p-7 ${style.overlay}`}>
               <span className={`mono ${style.label}`}>Shop by category</span>
               <h3 className="serif mt-2 text-4xl">{category.name}</h3>

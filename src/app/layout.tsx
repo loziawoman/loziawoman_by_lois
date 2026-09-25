@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { DM_Mono, DM_Sans, Playfair_Display } from 'next/font/google';
 import { Providers } from '@/components/providers';
 import './globals.css';
@@ -114,6 +115,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <Providers>{children}</Providers>
       </body>
+      <GoogleAnalytics gaId="G-JMBWW5YKLH" />
     </html>
   );
 }

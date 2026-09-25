@@ -14,6 +14,7 @@
     "test": "tsx --test src/tests/*.test.ts"
   },
   "dependencies": {
+    "@next/third-parties": "^16.3.6",
     "@radix-ui/react-toast": "^1.2.7",
     "@radix-ui/react-tooltip": "^1.2.0",
     "@supabase/ssr": "^0.7.0",
@@ -25,10 +26,10 @@
     "next-themes": "^0.4.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "resend": "^6.5.2",
     "server-only": "^0.0.1",
     "tailwind-merge": "^3.3.1",
-    "zod": "^3.25.76",
-    "resend": "^6.5.2"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.14",

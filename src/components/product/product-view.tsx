@@ -11,7 +11,7 @@ import { track } from '@/lib/analytics';
 import { MAX_LINE_QUANTITY } from '@/lib/cart/cart';
 import { naira } from '@/lib/format';
 import { stockStatus } from '@/lib/inventory/stock';
-import { findVariant, initialSelection, isColourAvailable, isPurchasable, isSizeAvailable, selectColour } from '@/lib/products/variants';
+import { discountedPrice, discountPercentage, findVariant, initialSelection, isColourAvailable, isPurchasable, isSizeAvailable, selectColour } from '@/lib/products/variants';
 import type { Product } from '@/types';
 
 export function ProductView({ product, initialColour }: { product: Product; initialColour?: string }) {
@@ -29,7 +29,10 @@ export function ProductView({ product, initialColour }: { product: Product; init
   const purchasable = isPurchasable(variant);
   const status = variant ? stockStatus(variant.available) : { kind: 'out' as const, label: 'Unavailable' };
   const maxQuantity = Math.min(MAX_LINE_QUANTITY, variant?.available ?? 1);
-  const price = variant?.price ?? product.basePrice;
+  const normalPrice = variant?.price ?? product.basePrice;
+  const price = discountedPrice(normalPrice, product.discount);
+  const saleActive = price < normalPrice;
+  const salePercent = saleActive ? discountPercentage(normalPrice, price) : 0;
 
   useEffect(() => { track({ name: 'product_viewed', props: { slug: product.slug } }); }, [product.slug]);
   useEffect(() => { setQuantity((q) => Math.min(q, Math.max(1, maxQuantity))); }, [maxQuantity]);
@@ -75,7 +78,17 @@ export function ProductView({ product, initialColour }: { product: Product; init
         <span className="mono text-[hsl(var(--accent))]">{product.category?.name}</span>
         <h1 className="serif mt-3 text-5xl md:text-6xl">{product.name}</h1>
         <div className="mt-4 flex items-center gap-4">
-          <p className="text-xl" data-testid="text-price">{naira(price)}</p>
+          <div className="text-xl" data-testid="text-price">
+            {saleActive ? (
+              <span className="flex items-baseline gap-3">
+                <span className="text-sm text-[hsl(var(--muted-foreground))] line-through">{naira(normalPrice)}</span>
+                <span>{naira(price)}</span>
+                <span className="text-xs">-{salePercent}%</span>
+              </span>
+            ) : (
+              <span>{naira(price)}</span>
+            )}
+          </div>
           <WishlistButton
             productId={product.id}
             slug={product.slug}

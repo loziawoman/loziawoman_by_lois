@@ -16,6 +16,9 @@ export function ProductForm({ product, categories, colours, sizes, readOnly = fa
   const [slugTouched, setSlugTouched] = useState(Boolean(product));
   const [colourIds, setColourIds] = useState<string[]>(product?.colours.map((c) => c.id) ?? []);
   const [sizeIds, setSizeIds] = useState<string[]>(product?.sizes.map((s) => s.id) ?? []);
+  const [discountType, setDiscountType] = useState<'fixed' | 'percentage'>(product?.discount.type ?? 'percentage');
+  const [discountEnabled, setDiscountEnabled] = useState(product?.discount.enabled ?? false);
+  const [discountValue, setDiscountValue] = useState(String(product?.discount.value ?? 0));
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState<Record<string, string[]>>({});
@@ -31,6 +34,9 @@ export function ProductForm({ product, categories, colours, sizes, readOnly = fa
       name: text('name'), slug: text('slug'), description: text('description'), shortDescription: text('shortDescription'), fabric: text('fabric'), care: text('care'),
       categoryId: text('categoryId') || null, basePrice: Number(text('basePrice')), status: text('status'), featured: f.get('featured') === 'on',
       originalColourId: text('originalColourId') || null, colourIds, sizeIds,
+      discountEnabled: f.get('discountEnabled') === 'on',
+      discountType: text('discountType') || 'percentage',
+      discountValue: Number(text('discountValue') || 0),
     };
     const result = await apiRequest<{ id: string }>(product ? `/api/admin/products/${product.id}` : '/api/admin/products', { method: product ? 'PATCH' : 'POST', body: jsonBody(body) });
     setBusy(false);
@@ -56,13 +62,43 @@ export function ProductForm({ product, categories, colours, sizes, readOnly = fa
           <label className="grid gap-1 text-sm"><span className="mono">Care</span><input name="care" defaultValue={product?.care} className={inputCls} /></label>
         </div>
         <div className="grid gap-5 md:grid-cols-4">
-          <label className="grid gap-1 text-sm"><span className="mono">Base price (₦)</span><input name="basePrice" type="number" min={0} step="0.01" required defaultValue={product?.basePrice ?? ''} className={inputCls} />{err('basePrice')}</label>
+          <label className="grid gap-1 text-sm"><span className="mono">Base price (₦)</span><input name="basePrice" type="number" min={0} step="1" required defaultValue={product?.basePrice ?? ''} className={inputCls} />{err('basePrice')}</label>
           <label className="grid gap-1 text-sm"><span className="mono">Category</span>
             <select name="categoryId" defaultValue={product?.category?.id ?? ''} className={inputCls}><option value="">None</option>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
           <label className="grid gap-1 text-sm"><span className="mono">Status</span>
             <select name="status" defaultValue={product?.status ?? 'draft'} className={inputCls}><option value="draft">Draft (hidden)</option><option value="published">Published</option><option value="archived">Archived (hidden)</option></select></label>
           <label className="flex min-h-10 items-center gap-2 self-end text-sm"><input type="checkbox" name="featured" defaultChecked={product?.featured} className="h-5 w-5" /> Featured on homepage</label>
         </div>
+
+        <section className="grid gap-4 border border-[hsl(var(--border))] p-4" aria-labelledby="discount-heading">
+          <div>
+            <h3 id="discount-heading" className="mono">Flash sale / discount</h3>
+            <p className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">Set a temporary sale price or percentage. Nothing changes on the shop until the switch is enabled.</p>
+          </div>
+          <label className="flex items-center gap-3 text-sm">
+            <input type="checkbox" name="discountEnabled" checked={discountEnabled} onChange={(e) => setDiscountEnabled(e.target.checked)} className="h-5 w-5" />
+            Show this discount on the shop
+          </label>
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="grid gap-1 text-sm">
+              <span className="mono">Discount type</span>
+              <select name="discountType" value={discountType} onChange={(e) => setDiscountType(e.target.value as 'fixed' | 'percentage')} className={inputCls}>
+                <option value="fixed">Fixed sale price</option>
+                <option value="percentage">Percentage off</option>
+              </select>
+            </label>
+            <label className="grid gap-1 text-sm">
+              <span className="mono">{discountType === 'fixed' ? 'Sale price (₦)' : 'Discount (%)'}</span>
+              <input name="discountValue" type="number" min={0} max={discountType === 'percentage' ? 100 : undefined} step="1" value={discountValue} onChange={(e) => setDiscountValue(e.target.value)} className={inputCls} />
+              {err('discountValue')}
+            </label>
+          </div>
+          <p className="text-xs text-[hsl(var(--muted-foreground))]">
+            {discountType === 'fixed'
+              ? 'Fixed sale price is the final price. Example: ₦120,000 normal → ₦80,000 sale = 33% off.'
+              : 'Percentage discounts are applied to the normal variant price and rounded to the nearest ₦1,000.'}
+          </p>
+        </section>
 
         <fieldset className="grid gap-2"><legend className="mono">Colours offered</legend>
           <div className="flex flex-wrap gap-2">{colours.map((c) => (

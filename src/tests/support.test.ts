@@ -89,7 +89,7 @@ test('recolouring rebuilds the colour from luminance, so black can become burgun
 
 const row = (over: Partial<ProductRow> = {}): ProductRow => ({
   id: 'p1', name: 'The Noir Skirt', slug: 'the-noir-skirt', description: 'd', short_description: 's', fabric: 'f', care: 'c',
-  base_price: '72000.00', status: 'published', featured: true, original_colour_id: 'c1', created_at: '2026-01-02T00:00:00Z', updated_at: '2026-01-02T00:00:00Z',
+  base_price: '72000.00', discount_enabled: false, discount_type: over.discount_type ?? 'fixed', discount_value: over.discount_value ?? 0, status: 'published', featured: true, original_colour_id: 'c1', created_at: '2026-01-02T00:00:00Z', updated_at: '2026-01-02T00:00:00Z',
   category: { id: 'k1', name: 'Bottoms', slug: 'bottoms', description: '', image_url: null, sort_order: 1 },
   images: [
     { id: 'i2', storage_path: 'products/p1/images/b.jpg', public_url: null, alt_text: '', sort_order: 1, is_primary: false, mask_storage_path: null, mask_public_url: null },

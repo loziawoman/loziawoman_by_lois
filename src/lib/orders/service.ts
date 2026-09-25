@@ -5,6 +5,7 @@ import { ApiError, rpcErrorCode } from '@/lib/api/response';
 import { RECEIPT_BUCKET } from '@/lib/env';
 import { notify } from '@/lib/notifications';
 import { getSiteSettings } from '@/lib/settings/queries';
+import { discountedPrice } from '@/lib/products/variants';
 import { validateUpload } from '@/lib/storage/validate';
 import type { CheckoutInput } from '@/lib/validation/checkout';
 import type { CustomerOrderView, FulfillmentStatus, PaymentStatus } from '@/types';
@@ -14,7 +15,7 @@ import { hashToken, isPlausibleToken } from './token';
 
 type VariantRow = {
   id: string; product_id: string; sku: string; price: number | string | null; stock_quantity: number; reserved_quantity: number; is_active: boolean;
-  product: { name: string; base_price: number | string; status: string } | null;
+  product: { name: string; base_price: number | string; status: string; discount_enabled: boolean; discount_type: 'fixed' | 'percentage'; discount_value: number | string } | null;
   colour: { name: string } | null;
   size: { name: string } | null;
 };
@@ -23,14 +24,15 @@ type VariantRow = {
 async function loadVariantRecords(variantIds: string[]): Promise<VariantRecord[]> {
   const { data, error } = await createSupabaseAdminClient()
     .from('product_variants')
-    .select('id, product_id, sku, price, stock_quantity, reserved_quantity, is_active, product:products(name, base_price, status), colour:colours(name), size:sizes(name)')
+    .select('id, product_id, sku, price, stock_quantity, reserved_quantity, is_active, product:products(name, base_price, status, discount_enabled, discount_type, discount_value), colour:colours(name), size:sizes(name)')
     .in('id', variantIds);
   if (error) throw error;
   return ((data ?? []) as unknown as VariantRow[]).flatMap((row) =>
     row.product && row.colour && row.size
       ? [{
           id: row.id, productId: row.product_id, productName: row.product.name, colourName: row.colour.name, sizeName: row.size.name, sku: row.sku,
-          unitPrice: Number(row.price ?? row.product.base_price), stockQuantity: row.stock_quantity, reservedQuantity: row.reserved_quantity,
+          unitPrice: discountedPrice(Number(row.price ?? row.product.base_price), { enabled: row.product.discount_enabled, type: row.product.discount_type, value: Number(row.product.discount_value) }),
+          stockQuantity: row.stock_quantity, reservedQuantity: row.reserved_quantity,
           isActive: row.is_active, productPublished: row.product.status === 'published',
         }]
       : [],

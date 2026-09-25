@@ -2,6 +2,8 @@
 
 export type UserRole = 'customer' | 'staff' | 'admin' | 'super_admin';
 export type ProductStatus = 'draft' | 'published' | 'archived';
+export type DiscountType = 'fixed' | 'percentage';
+export type ProductDiscount = { enabled: boolean; type: DiscountType; value: number };
 export type PaymentStatus = 'PENDING' | 'SUBMITTED' | 'VERIFIED' | 'REJECTED' | 'REFUNDED';
 export type FulfillmentStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
 
@@ -55,6 +57,7 @@ export type Product = {
   care: string;
   category: Category | null;
   basePrice: number;
+  discount: ProductDiscount;
   status: ProductStatus;
   featured: boolean;
   originalColourId: string | null;

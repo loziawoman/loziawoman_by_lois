@@ -1,4 +1,4 @@
-import type { ProductColour, ProductSize, ProductVariant } from '@/types';
+import type { ProductColour, ProductDiscount, ProductSize, ProductVariant } from '@/types';
 
 export const findVariant = (variants: ProductVariant[], colourId: string, sizeId: string): ProductVariant | undefined =>
   variants.find((v) => v.colourId === colourId && v.sizeId === sizeId);
@@ -12,6 +12,36 @@ export const isSizeAvailable = (variants: ProductVariant[], colourId: string, si
 
 export const isColourAvailable = (variants: ProductVariant[], colourId: string): boolean =>
   variants.some((v) => v.colourId === colourId && isPurchasable(v));
+
+
+
+/** Sale prices are rounded to the nearest ₦1,000 for clean storefront pricing. */
+export const roundSalePrice = (value: number): number => Math.max(0, Math.round(value / 1000) * 1000);
+
+/**
+ * A fixed discount value is the FINAL sale price, not an amount to subtract.
+ * Example: ₦120,000 normal price + fixed sale price ₦80,000 => ₦80,000 sale price and 33% off.
+ * Percentage discounts are applied to each variant's normal price.
+ */
+export function discountedPrice(normalPrice: number, discount?: ProductDiscount): number {
+  if (!discount?.enabled || discount.value <= 0) return normalPrice;
+  if (discount.type === 'fixed') return Math.min(normalPrice, roundSalePrice(discount.value));
+  const percentage = Math.min(100, Math.max(0, discount.value));
+  return roundSalePrice(normalPrice * (1 - percentage / 100));
+}
+
+export function discountPercentage(normalPrice: number, salePrice: number): number {
+  if (normalPrice <= 0 || salePrice >= normalPrice) return 0;
+  return Math.max(0, Math.round(((normalPrice - salePrice) / normalPrice) * 100));
+}
+
+export type DisplayPrice = {
+  price: number;
+  originalPrice: number;
+  discountPercent: number;
+  discounted: boolean;
+  from: boolean;
+};
 
 export type Selection = { colourId: string; sizeId: string };
 
@@ -36,12 +66,21 @@ export function selectColour(variants: ProductVariant[], sizes: ProductSize[], c
   return { colourId, sizeId: fallback?.id ?? current.sizeId };
 }
 
-/** Price to show on cards: the lowest active price, and whether prices differ across variants. */
-export function displayPrice(basePrice: number, variants: ProductVariant[]): { price: number; from: boolean } {
-  const prices = variants.filter((v) => v.isActive).map((v) => v.price);
-  if (prices.length === 0) return { price: basePrice, from: false };
-  const min = Math.min(...prices);
-  return { price: min, from: prices.some((p) => p !== min) };
+/** Price to show on cards, including an optional product-wide sale. */
+export function displayPrice(basePrice: number, variants: ProductVariant[], discount?: ProductDiscount): DisplayPrice {
+  const normalPrices = variants.filter((v) => v.isActive).map((v) => v.price);
+  const normals = normalPrices.length ? normalPrices : [basePrice];
+  const sales = normals.map((price) => discountedPrice(price, discount));
+  const originalPrice = Math.min(...normals);
+  const price = Math.min(...sales);
+  const discounted = price < originalPrice;
+  return {
+    price,
+    originalPrice,
+    discountPercent: discounted ? discountPercentage(originalPrice, price) : 0,
+    discounted,
+    from: new Set(sales).size > 1,
+  };
 }
 
 export const hasStock = (variants: ProductVariant[]): boolean => variants.some(isPurchasable);

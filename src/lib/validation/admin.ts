@@ -13,15 +13,26 @@ export const productInputSchema = z
     care: text(200).default(''),
     categoryId: uuid.nullable().default(null),
     basePrice: money,
+    discountEnabled: z.boolean().default(false),
+    discountType: z.enum(['fixed', 'percentage']).default('percentage'),
+    discountValue: z.number().min(0).max(100_000_000).default(0),
     status: z.enum(['draft', 'published', 'archived']).default('draft'),
     featured: z.boolean().default(false),
     originalColourId: uuid.nullable().default(null),
     colourIds: z.array(uuid).max(40).default([]),
     sizeIds: z.array(uuid).max(20).default([]),
   })
-  .strict();
+  .strict()
+  .superRefine((value, ctx) => {
+    if (value.discountType === 'percentage' && value.discountValue > 100) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['discountValue'], message: 'Percentage must be between 0 and 100.' });
+    }
+  });
 export type ProductInput = z.infer<typeof productInputSchema>;
-export const productPatchSchema = productInputSchema.partial();
+export const productPatchSchema =
+  productInputSchema instanceof z.ZodEffects
+    ? productInputSchema.innerType().partial()
+    : (productInputSchema as z.AnyZodObject).partial();
 
 export const variantInputSchema = z
   .object({

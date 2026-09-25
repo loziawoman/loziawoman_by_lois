@@ -40,21 +40,10 @@ export function ShopFilters({ categories, sizes }: { categories: Category[]; siz
     </label>
   );
 
-  const [mobileOpen, setMobileOpen] = useState(true);
-
   return (
-    <div className="border-y border-[hsl(var(--border))] py-4">
-      <button
-        type="button"
-        className="mono flex min-h-11 w-full items-center justify-between md:hidden"
-        aria-expanded={mobileOpen}
-        aria-controls="shop-filters-panel"
-        onClick={() => setMobileOpen((open) => !open)}
-      >
-        <span>Filter &amp; sort</span>
-        <span aria-hidden="true" className="text-sm leading-none">{mobileOpen ? '−' : '+'}</span>
-      </button>
-      <div id="shop-filters-panel" className={`${mobileOpen ? 'block' : 'hidden'} mt-4 grid gap-4 sm:grid-cols-2 md:mt-0 md:grid md:grid-cols-4 lg:grid-cols-8`} aria-busy={pending}>
+    <details className="group border-y border-[hsl(var(--border))] py-4 md:open:block" open>
+      <summary className="mono flex min-h-11 cursor-pointer items-center justify-between md:hidden">Filter &amp; sort <span aria-hidden="true">+</span></summary>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 md:mt-0 md:grid-cols-4 lg:grid-cols-8" aria-busy={pending}>
         <label className="grid gap-1 text-xs sm:col-span-2 md:col-span-2 lg:col-span-2">
           <span className="mono">Search</span>
           <input type="search" className={field} value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search the collection" />
@@ -74,10 +63,10 @@ export function ShopFilters({ categories, sizes }: { categories: Category[]; siz
         </label>
       </div>
       {active && (
-        <button type="button" onClick={() => { setQuery(''); startTransition(() => router.replace(pathname, { scroll: false })); }} className="mono mt-4 min-h-11 underline-link">
+        <button type="button" onClick={() => { setQuery(''); startTransition(() => router.replace(pathname, { scroll: false })); }} className="mono mt-4 underline-link min-h-11">
           Clear all filters
         </button>
       )}
-    </div>
+    </details>
   );
 }

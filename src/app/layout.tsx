@@ -16,7 +16,7 @@ const dmMono = DM_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '
 const description =
   "LOZIA is an Abuja-born women's fashion label creating contemporary pieces for the woman who knows that presence does not need to be loud.";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://loziawoman.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://loziawoman.shop';
 const metadataBase = new URL(siteUrl);
 
 export const metadata: Metadata = {
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     description,
     images: [
       {
-        url: '/images/lozia-about-hero.png',
+        url: '/images/og-image.png',
         width: 1122,
         height: 1402,
         alt: 'LOZIA contemporary women’s fashion',
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'LOZIA | Contemporary Women’s Fashion',
     description,
-    images: ['/images/lozia-about-hero.png'],
+    images: ['/images/og-image.png'],
   },
   formatDetection: {
     email: false,

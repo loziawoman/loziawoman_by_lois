@@ -44,6 +44,11 @@ function escapeHtml(value: string): string {
     .replaceAll("'", '&#039;');
 }
 
+function getFirstName(fullName: string | null | undefined): string {
+  const firstName = fullName?.trim().split(/\s+/)[0];
+  return firstName || 'there';
+}
+
 function orderSubject(event: NotificationEvent & { type: Exclude<NotificationEvent['type'], 'contact_message'> }): string {
   switch (event.type) {
     case 'order_received': return `LOZIA order ${event.orderNumber} received`;
@@ -131,7 +136,7 @@ const resendProvider: NotificationProvider = {
       if (!customer?.email) return;
       to = customer.email;
       subject = orderSubject(event);
-      html = orderHtml(event, customer.full_name ?? 'there');
+      html = orderHtml(event, getFirstName(customer.full_name));
     }
 
     const response = await fetch('https://api.resend.com/emails', {

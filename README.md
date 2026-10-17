@@ -1155,3 +1155,5 @@ existing setting → existing component → existing API → existing Supabase m
 over creating a second parallel implementation.
 
 The goal is for LOZIA to remain understandable to both the brand team and the developers maintaining it.
+
+Author & Developer: [NexDev(dBillionaire-Dev)](https://nex.is-a.dev)

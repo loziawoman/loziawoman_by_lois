@@ -1,5 +1,6 @@
 'use client';
 
+import { useDialog } from '@/components/ui/dialog-provider';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiRequest, jsonBody } from '@/lib/api/client';
@@ -11,8 +12,15 @@ const LABEL: Record<OrderAction, string> = {
   mark_delivered: 'Mark as delivered', cancel: 'Cancel order', refund: 'Mark refunded',
 };
 
+const CONFIRM_META: Record<string, { title: string; confirmLabel: string; tone?: 'default' | 'danger' }> = {
+  verify_payment: { title: 'Verify this payment?', confirmLabel: 'Verify payment' },
+  cancel: { title: 'Cancel this order?', confirmLabel: 'Cancel order', tone: 'danger' },
+  refund: { title: 'Mark as refunded?', confirmLabel: 'Mark refunded', tone: 'danger' },
+};
+
 export function OrderActions({ orderId, actions, hasReceipt }: { orderId: string; actions: OrderAction[]; hasReceipt: boolean }) {
   const router = useRouter();
+  const dialog = useDialog();
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [reason, setReason] = useState('');
@@ -21,7 +29,10 @@ export function OrderActions({ orderId, actions, hasReceipt }: { orderId: string
   const [note, setNote] = useState('');
 
   const run = async (body: Record<string, unknown>, confirmText?: string) => {
-    if (confirmText && !window.confirm(confirmText)) return;
+    if (confirmText) {
+      const confirmed = await dialog.confirm({ message: confirmText, ...CONFIRM_META[String(body.action)] });
+      if (!confirmed) return;
+    }
     setBusy(true); setMessage('');
     const result = await apiRequest(`/api/admin/orders/${orderId}`, { method: 'POST', body: jsonBody(body) });
     setBusy(false);

@@ -1,5 +1,6 @@
 'use client';
 
+import { useDialog } from '@/components/ui/dialog-provider';
 import { FormEvent, useEffect, useState } from 'react';
 import { MessageCircle, Star, X } from 'lucide-react';
 import type { Review } from '@/types';
@@ -18,6 +19,7 @@ function Stars({ rating }: { rating: number }) {
 }
 
 export function ReviewsSection({ reviewSubmissionEnabled }: { reviewSubmissionEnabled: boolean }) {
+  const dialog = useDialog();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [open, setOpen] = useState(false);
   const [rating, setRating] = useState(5);
@@ -50,7 +52,7 @@ export function ReviewsSection({ reviewSubmissionEnabled }: { reviewSubmissionEn
     });
     const payload = await response.json().catch(() => null);
     if (!response.ok || !payload?.ok) {
-      window.alert(payload?.error?.message ?? 'Unable to publish your review.');
+      await dialog.alert({ title: 'Review not published', message: payload?.error?.message ?? 'Unable to publish your review.' });
       return;
     }
 

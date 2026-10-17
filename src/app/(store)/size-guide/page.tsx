@@ -7,6 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function SizeGuidePage() {
   const { sizeGuide } = await getSiteSettings();
+  const { columns, rows } = sizeGuide;
   return (
     <main className="mx-auto max-w-[1000px] px-5 py-20 md:px-10 md:py-32">
       <span className="mono text-[hsl(var(--accent))]">Find your fit</span>
@@ -15,18 +16,19 @@ export default async function SizeGuidePage() {
       {sizeGuide.isPlaceholder && <PlaceholderNotice what="The measurements below are demonstration values, not LOZIA's official sizing. This size chart" />}
 
       <div className="mt-14 overflow-x-auto">
-        <table className="w-full min-w-[560px] border-collapse text-left text-sm">
+        <table className="w-full border-collapse text-left text-sm" style={{ minWidth: `${Math.max(560, 120 + columns.length * 120)}px` }}>
           <caption className="sr-only">Body measurements by size</caption>
           <thead>
             <tr className="border-y border-[hsl(var(--border))]">
-              {['Size', 'Bust', 'Waist', 'Hip', 'UK'].map((h) => <th key={h} scope="col" className="py-4 mono">{h}</th>)}
+              <th scope="col" className="py-4 pr-4 mono">Size</th>
+              {columns.map((c) => <th key={c.id} scope="col" className="py-4 pr-4 mono">{c.label}</th>)}
             </tr>
           </thead>
           <tbody>
-            {sizeGuide.rows.map((r) => (
-              <tr key={r.size} className="border-b border-[hsl(var(--border))]">
-                <th scope="row" className="serif py-5 text-xl font-normal">{r.size}</th>
-                <td className="py-5">{r.bust}</td><td className="py-5">{r.waist}</td><td className="py-5">{r.hip}</td><td className="py-5">{r.uk}</td>
+            {rows.map((r, i) => (
+              <tr key={i} className="border-b border-[hsl(var(--border))]">
+                <th scope="row" className="serif py-5 pr-4 text-xl font-normal">{r.size}</th>
+                {columns.map((c) => <td key={c.id} className="py-5 pr-4">{r[c.id] ?? ''}</td>)}
               </tr>
             ))}
           </tbody>

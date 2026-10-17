@@ -156,8 +156,11 @@ export type HomepageContent = {
   ctaLabel: string;
 };
 
-export type SizeGuideRow = { size: string; bust: string; waist: string; hip: string; uk: string };
-export type SizeGuideContent = { intro: string; howToMeasure: string[]; rows: SizeGuideRow[]; isPlaceholder: boolean };
+/** A column the admin defined (e.g. "Trouser length"). The id is stable, so renaming the label never loses data. */
+export type SizeGuideColumn = { id: string; label: string };
+/** One size, plus one value per column, keyed by column id. */
+export type SizeGuideRow = { size: string; [columnId: string]: string };
+export type SizeGuideContent = { intro: string; howToMeasure: string[]; columns: SizeGuideColumn[]; rows: SizeGuideRow[]; isPlaceholder: boolean };
 
 export type SiteSettings = {
   brandName: string;

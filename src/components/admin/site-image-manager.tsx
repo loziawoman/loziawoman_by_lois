@@ -1,5 +1,6 @@
 'use client';
 
+import { useDialog } from '@/components/ui/dialog-provider';
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoziaImage } from '@/components/lozia-image';
@@ -10,6 +11,7 @@ import { btnCls, btnGhostCls, inputCls, Panel } from './ui';
 
 export function SiteImageManager({ images }: { images: SiteImages }) {
   const router = useRouter();
+  const dialog = useDialog();
   const [busyKey, setBusyKey] = useState<string | null>(null);
   const [message, setMessage] = useState('');
 
@@ -38,8 +40,13 @@ export function SiteImageManager({ images }: { images: SiteImages }) {
     return r.ok ? { ok: true } : { ok: false, message: r.message };
   });
 
-  const remove = (key: SiteImageKey) => {
-    if (!window.confirm(`Reset ${SITE_IMAGE_META[key].label} to its built-in image?`)) return;
+  const remove = async (key: SiteImageKey) => {
+    const confirmed = await dialog.confirm({
+      title: 'Reset this image?',
+      message: `Reset ${SITE_IMAGE_META[key].label} to its built-in image?`,
+      confirmLabel: 'Reset image',
+    });
+    if (!confirmed) return;
     void call(key, async () => {
       const r = await apiRequest(`/api/admin/site-images/${key}`, { method: 'DELETE' });
       return r.ok ? { ok: true } : { ok: false, message: r.message };

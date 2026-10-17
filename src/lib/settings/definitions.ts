@@ -3,7 +3,7 @@ import type { BankDetails, SiteSettings } from '@/types';
 import { defaultSiteImages } from '@/lib/content/site-images';
 import {
   defaultAboutStory, defaultHomepage, defaultPrivacyPolicy, defaultReturnsPolicy, defaultShippingPolicy,
-  defaultShippingRates, defaultSizeGuide, defaultTermsPolicy,
+  defaultShippingRates, defaultSizeGuide, defaultTermsPolicy, legacySizeGuideColumns,
 } from '@/lib/content/defaults';
 
 const text = (max: number) => z.string().trim().max(max);
@@ -32,12 +32,22 @@ const homepageSchema = z.object({
   announcement: text(240), eyebrow: text(120), headline: text(120), italicHeadline: text(120), description: text(600), ctaLabel: text(60),
 });
 
-const sizeGuideSchema = z.object({
-  intro: text(1000),
-  howToMeasure: z.array(text(300)).max(12),
-  isPlaceholder: z.boolean(),
-  rows: z.array(z.object({ size: text(10), bust: text(30), waist: text(30), hip: text(30), uk: text(10) })).max(20),
-});
+/** Size guides saved before admin-defined columns existed have no "columns": give them Bust/Waist/Hip/UK so nothing is lost. */
+const upgradeLegacySizeGuide = (value: unknown) =>
+  value && typeof value === 'object' && !Array.isArray(value) && !('columns' in value)
+    ? { ...value, columns: legacySizeGuideColumns }
+    : value;
+
+const sizeGuideSchema = z.preprocess(
+  upgradeLegacySizeGuide,
+  z.object({
+    intro: text(1000),
+    howToMeasure: z.array(text(300)).max(12),
+    isPlaceholder: z.boolean(),
+    columns: z.array(z.object({ id: z.string().trim().regex(/^[a-z0-9_]{1,40}$/, 'Invalid column id.').refine((id) => id !== 'size', 'Invalid column id.'), label: text(40).min(1, 'Every column needs a name.') })).max(12),
+    rows: z.array(z.object({ size: text(20) }).catchall(text(60))).max(30),
+  }),
+);
 
 const url = z.union([z.literal(''), z.string().trim().max(500).regex(/^https:\/\//i, 'Use a full https:// link.')]);
 

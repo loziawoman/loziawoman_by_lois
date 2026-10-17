@@ -1,9 +1,10 @@
 'use client';
 
+import { useDialog } from '@/components/ui/dialog-provider';
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiRequest, jsonBody } from '@/lib/api/client';
-import type { PolicyContent, ShippingRates, SizeGuideContent, HomepageContent, SiteImages } from '@/types';
+import type { PolicyContent, ShippingRates, SizeGuideContent, SizeGuideRow, HomepageContent, SiteImages } from '@/types';
 import { btnCls, btnGhostCls, inputCls, Panel } from './ui';
 import { SiteImageManager } from './site-image-manager';
 
@@ -154,27 +155,116 @@ export function PolicyEditor({ settingKey, policy }: { settingKey: string; polic
 
 export function SizeGuideEditor({ guide }: { guide: SizeGuideContent }) {
   const { busy, message, save } = useSave();
+  const dialog = useDialog();
+  const [columns, setColumns] = useState(guide.columns);
   const [rows, setRows] = useState(guide.rows);
   const [placeholder, setPlaceholder] = useState(guide.isPlaceholder);
   const [intro, setIntro] = useState(guide.intro);
   const [steps, setSteps] = useState(guide.howToMeasure.join('\n'));
-  const setCell = (i: number, key: keyof SizeGuideContent['rows'][number], value: string) => setRows(rows.map((r, j) => (j === i ? { ...r, [key]: value } : r)));
+  const [newColumn, setNewColumn] = useState('');
+  const [error, setError] = useState('');
+
+  const blankRow = (cols: typeof columns): SizeGuideRow => ({ size: '', ...Object.fromEntries(cols.map((c) => [c.id, ''])) });
+  const setCell = (i: number, key: string, value: string) => setRows(rows.map((r, j) => (j === i ? { ...r, [key]: value } : r)));
+
+  const addColumn = () => {
+    const label = newColumn.trim();
+    if (!label) { setError('Type a name for the new column first, for example "Trouser length".'); return; }
+    if (columns.length >= 12) { setError('A size guide can have at most 12 extra columns.'); return; }
+    if (columns.some((c) => c.label.trim().toLowerCase() === label.toLowerCase())) { setError(`There is already a column called "${label}".`); return; }
+    const id = `col_${Math.random().toString(36).slice(2, 8)}`;
+    setColumns([...columns, { id, label }]);
+    setRows(rows.map((r) => ({ ...r, [id]: '' })));
+    setNewColumn('');
+    setError('');
+  };
+  const renameColumn = (id: string, label: string) => setColumns(columns.map((c) => (c.id === id ? { ...c, label } : c)));
+  const moveColumn = (i: number, dir: -1 | 1) => {
+    const j = i + dir;
+    if (j < 0 || j >= columns.length) return;
+    const next = [...columns];
+    [next[i], next[j]] = [next[j], next[i]];
+    setColumns(next);
+  };
+  const removeColumn = async (id: string) => {
+    const label = columns.find((c) => c.id === id)?.label || 'this column';
+    const confirmed = await dialog.confirm({
+      title: 'Remove this column?',
+      message: `Remove the "${label}" column and all its values? Customers will not see the change until you click Save.`,
+      confirmLabel: 'Remove column',
+      tone: 'danger',
+    });
+    if (!confirmed) return;
+    setColumns(columns.filter((c) => c.id !== id));
+    setRows(rows.map((r) => { const next = { ...r }; delete next[id]; return next; }));
+  };
+
+  const submit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (columns.some((c) => !c.label.trim())) { setError('Every column needs a name. Fill in or remove the empty one.'); return; }
+    setError('');
+    const cleanColumns = columns.map((c) => ({ id: c.id, label: c.label.trim() }));
+    const cleanRows = rows.map((r) => ({ size: r.size, ...Object.fromEntries(cleanColumns.map((c) => [c.id, r[c.id] ?? ''])) }));
+    void save({ size_guide: { intro, isPlaceholder: placeholder, howToMeasure: steps.split('\n').map((s) => s.trim()).filter(Boolean), columns: cleanColumns, rows: cleanRows } });
+  };
+
+  const gridStyle = { gridTemplateColumns: `minmax(90px,.7fr) repeat(${columns.length}, minmax(140px,1fr)) 90px` };
 
   return (
     <Panel title="Size guide">
-      <form onSubmit={(e) => { e.preventDefault(); void save({ size_guide: { intro, isPlaceholder: placeholder, howToMeasure: steps.split('\n').map((s) => s.trim()).filter(Boolean), rows } }); }} className="grid gap-4">
+      <form onSubmit={submit} className="grid gap-4">
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={placeholder} onChange={(e) => setPlaceholder(e.target.checked)} className="h-5 w-5" /> These measurements are demonstration values, not official (shows a notice)</label>
         <Label text="Intro"><textarea rows={2} value={intro} onChange={(e) => setIntro(e.target.value)} className={inputCls} /></Label>
         <Label text="How to measure (one step per line)"><textarea rows={4} value={steps} onChange={(e) => setSteps(e.target.value)} className={inputCls} /></Label>
-        <div className="grid gap-2">
-          {rows.map((r, i) => (
-            <div key={i} className="grid grid-cols-2 gap-2 sm:grid-cols-6">
-              {(['size', 'bust', 'waist', 'hip', 'uk'] as const).map((key) => <input key={key} aria-label={`${key} for row ${i + 1}`} placeholder={key} value={r[key]} onChange={(e) => setCell(i, key, e.target.value)} className={inputCls} />)}
-              <button type="button" className={btnGhostCls} onClick={() => setRows(rows.filter((_, j) => j !== i))}>Remove</button>
-            </div>
-          ))}
-          <button type="button" className={`${btnGhostCls} w-fit`} onClick={() => setRows([...rows, { size: '', bust: '', waist: '', hip: '', uk: '' }])}>Add row</button>
+
+        <div className="grid gap-2 border border-[hsl(var(--border))] p-3">
+          <span className="mono">Add a column</span>
+          <p className="text-xs text-[hsl(var(--muted-foreground))]">Name it anything, such as &ldquo;Trouser length&rdquo; or &ldquo;Shoulder&rdquo;. It appears on the customer size guide as soon as you save.</p>
+          <div className="flex flex-wrap gap-2">
+            <input
+              aria-label="New column name"
+              placeholder="e.g. Trouser length"
+              value={newColumn}
+              maxLength={40}
+              onChange={(e) => setNewColumn(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addColumn(); } }}
+              className={`${inputCls} max-w-[320px]`}
+            />
+            <button type="button" className={btnGhostCls} onClick={addColumn}>Add column</button>
+          </div>
         </div>
+
+        <div className="overflow-x-auto">
+          <div className="grid min-w-max gap-2" role="group" aria-label="Size guide table">
+            <div className="grid items-start gap-2" style={gridStyle}>
+              <span className="mono self-center">Size</span>
+              {columns.map((c, i) => (
+                <div key={c.id} className="grid gap-1">
+                  <input aria-label={`Column ${i + 1} name`} value={c.label} maxLength={40} onChange={(e) => renameColumn(c.id, e.target.value)} className={`${inputCls} font-medium`} />
+                  <div className="flex gap-1">
+                    <button type="button" className={`${btnGhostCls} !min-h-8 !px-2`} aria-label={`Move ${c.label || 'column'} left`} disabled={i === 0} onClick={() => moveColumn(i, -1)}>←</button>
+                    <button type="button" className={`${btnGhostCls} !min-h-8 !px-2`} aria-label={`Move ${c.label || 'column'} right`} disabled={i === columns.length - 1} onClick={() => moveColumn(i, 1)}>→</button>
+                    <button type="button" className={`${btnGhostCls} !min-h-8 !px-2`} aria-label={`Remove ${c.label || 'column'} column`} onClick={() => removeColumn(c.id)}>Remove</button>
+                  </div>
+                </div>
+              ))}
+              <span />
+            </div>
+
+            {rows.map((r, i) => (
+              <div key={i} className="grid items-center gap-2" style={gridStyle}>
+                <input aria-label={`Size for row ${i + 1}`} placeholder="Size" maxLength={20} value={r.size} onChange={(e) => setCell(i, 'size', e.target.value)} className={inputCls} />
+                {columns.map((c) => (
+                  <input key={c.id} aria-label={`${c.label || 'Column'} for row ${i + 1}`} placeholder={c.label} maxLength={60} value={r[c.id] ?? ''} onChange={(e) => setCell(i, c.id, e.target.value)} className={inputCls} />
+                ))}
+                <button type="button" className={btnGhostCls} onClick={() => setRows(rows.filter((_, j) => j !== i))}>Remove</button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button type="button" className={`${btnGhostCls} w-fit`} onClick={() => setRows([...rows, blankRow(columns)])}>Add row</button>
+        {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
         <Footer busy={busy} message={message} />
       </form>
     </Panel>

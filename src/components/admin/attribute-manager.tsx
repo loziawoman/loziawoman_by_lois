@@ -1,5 +1,6 @@
 'use client';
 
+import { useDialog } from '@/components/ui/dialog-provider';
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiRequest, jsonBody } from '@/lib/api/client';
@@ -26,6 +27,7 @@ function toBody(kind: Kind, v: Record<string, string>) {
 
 function RowForm({ kind, row, onDone }: { kind: Kind; row?: Row; onDone: (message: string) => void }) {
   const router = useRouter();
+  const dialog = useDialog();
   const fields = FIELDS[kind];
   const [values, setValues] = useState<Record<string, string>>(() => Object.fromEntries(fields.map((f) => [f.key, String(row?.[f.key] ?? (f.type === 'color' ? '#000000' : ''))])));
   const [busy, setBusy] = useState(false);
@@ -44,7 +46,14 @@ function RowForm({ kind, row, onDone }: { kind: Kind; row?: Row; onDone: (messag
   };
 
   const remove = async () => {
-    if (!row || !window.confirm(`Delete ${row.name}?`)) return;
+    if (!row) return;
+    const confirmed = await dialog.confirm({
+      title: `Delete ${row.name}?`,
+      message: 'This cannot be undone.',
+      confirmLabel: 'Delete',
+      tone: 'danger',
+    });
+    if (!confirmed) return;
     setBusy(true);
     const r = await apiRequest(`${base}/${row.id}`, { method: 'DELETE' });
     setBusy(false);

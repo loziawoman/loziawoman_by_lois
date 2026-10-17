@@ -1,4 +1,4 @@
-import type { HomepageContent, PolicyContent, ShippingRates, SizeGuideContent } from '@/types';
+import type { HomepageContent, PolicyContent, ShippingRates, SizeGuideColumn, SizeGuideContent } from '@/types';
 
 // Everything in this file is starter copy. Anything in [square brackets] is a placeholder that LOZIA must replace
 // with real business information in /admin > Content. No delivery prices, times, return windows or legal
@@ -87,7 +87,16 @@ export const defaultTermsPolicy: PolicyContent = {
   ],
 };
 
+/** The columns every size guide had before admins could define their own. Also used to upgrade older saved guides. */
+export const legacySizeGuideColumns: SizeGuideColumn[] = [
+  { id: 'bust', label: 'Bust' },
+  { id: 'waist', label: 'Waist' },
+  { id: 'hip', label: 'Hip' },
+  { id: 'uk', label: 'UK' },
+];
+
 export const defaultSizeGuide: SizeGuideContent = {
+  columns: legacySizeGuideColumns,
   intro: 'Our pieces are designed to follow the body, not fight it. If you are between sizes, we recommend sizing up for a more relaxed line.',
   howToMeasure: [
     'Bust: measure around the fullest part of your chest, keeping the tape level.',

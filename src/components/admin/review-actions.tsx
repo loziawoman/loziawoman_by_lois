@@ -1,10 +1,12 @@
 'use client';
 
+import { useDialog } from '@/components/ui/dialog-provider';
 import { useState } from 'react';
 import { apiRequest } from '@/lib/api/client';
 import { btnGhostCls } from './ui';
 
 export function ReviewActions({ id, status }: { id: string; status: string }) {
+  const dialog = useDialog();
   const [busy, setBusy] = useState(false);
 
   async function update(nextStatus: 'visible' | 'hidden' | 'spotlight') {
@@ -15,16 +17,22 @@ export function ReviewActions({ id, status }: { id: string; status: string }) {
       body: JSON.stringify({ status: nextStatus }),
     });
     setBusy(false);
-    if (!result.ok) window.alert(result.message);
+    if (!result.ok) await dialog.alert({ title: 'That did not work', message: result.message });
     else window.location.reload();
   }
 
   async function remove() {
-    if (!window.confirm('Delete this review permanently?')) return;
+    const confirmed = await dialog.confirm({
+      title: 'Delete this review?',
+      message: 'This review will be deleted permanently. To keep it but stop showing it, use Hide instead.',
+      confirmLabel: 'Delete review',
+      tone: 'danger',
+    });
+    if (!confirmed) return;
     setBusy(true);
     const result = await apiRequest(`/api/admin/reviews/${id}`, { method: 'DELETE' });
     setBusy(false);
-    if (!result.ok) window.alert(result.message);
+    if (!result.ok) await dialog.alert({ title: 'That did not work', message: result.message });
     else window.location.reload();
   }
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { useDialog } from '@/components/ui/dialog-provider';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiRequest } from '@/lib/api/client';
@@ -7,9 +8,16 @@ import { btnGhostCls } from './ui';
 
 export function DeleteProduct({ productId, name }: { productId: string; name: string }) {
   const router = useRouter();
+  const dialog = useDialog();
   const [message, setMessage] = useState('');
   const remove = async () => {
-    if (!window.confirm(`Remove ${name}? Pieces that appear on past orders are archived instead of deleted.`)) return;
+    const confirmed = await dialog.confirm({
+      title: 'Remove this piece?',
+      message: `Remove ${name}? Pieces that appear on past orders are archived instead of deleted.`,
+      confirmLabel: 'Delete or archive',
+      tone: 'danger',
+    });
+    if (!confirmed) return;
     const result = await apiRequest<{ archived: boolean }>(`/api/admin/products/${productId}`, { method: 'DELETE' });
     if (!result.ok) { setMessage(result.message); return; }
     router.push('/admin/products');

@@ -1,5 +1,6 @@
 'use client';
 
+import { useDialog } from '@/components/ui/dialog-provider';
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoziaImage } from '@/components/lozia-image';
@@ -9,6 +10,7 @@ import { btnCls, btnGhostCls, inputCls } from './ui';
 
 export function ImageManager({ productId, images, readOnly }: { productId: string; images: ProductImage[]; readOnly: boolean }) {
   const router = useRouter();
+  const dialog = useDialog();
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -43,8 +45,14 @@ export function ImageManager({ productId, images, readOnly }: { productId: strin
     void call(async () => { const r = await apiRequest(`/api/admin/products/${productId}/images`, { method: 'PUT', body: jsonBody({ order }) }); return r.ok ? { ok: true } : { ok: false, message: r.message }; });
   };
 
-  const remove = (imageId: string) => {
-    if (!window.confirm('Delete this image?')) return;
+  const remove = async (imageId: string) => {
+    const confirmed = await dialog.confirm({
+      title: 'Delete this image?',
+      message: 'This image will be removed from the product permanently.',
+      confirmLabel: 'Delete image',
+      tone: 'danger',
+    });
+    if (!confirmed) return;
     void call(async () => { const r = await apiRequest(`/api/admin/products/${productId}/images/${imageId}`, { method: 'DELETE' }); return r.ok ? { ok: true } : { ok: false, message: r.message }; });
   };
 
